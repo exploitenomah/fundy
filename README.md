@@ -1,0 +1,2 @@
+# kickstart
+learning solidity
