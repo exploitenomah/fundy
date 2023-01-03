@@ -88,6 +88,33 @@ describe('Campaign', () => {
       assert(false)
     }
   })
+  it('processes requests', async () => {
+    const initialBalOfRecipient = await web3.eth.getBalance(accounts[1])
+    await campaign.methods.contribute().send({
+      from: accounts[0],
+      value: web3.utils.toWei('10', 'ether')
+    })
+    await campaign.methods.createRequest(
+      'buy things', 
+      web3.utils.toWei('5', 'ether'),
+      accounts[1]
+    ).send({
+      from: accounts[0],
+      gas: 3000000
+    })
+    await campaign.methods.approveRequest(0).send({
+      from: accounts[0],
+      gas: 3000000
+    })
+    await campaign.methods.finalizeRequest(0)
+    .send({
+      from: accounts[0],
+      gas: 3000000
+    })
+    const finalBalOfRecipient = await web3.eth.getBalance(accounts[1])
+    console.log(+finalBalOfRecipient, initialBalOfRecipient, 'sdjkakdks')
+    assert.ok(+finalBalOfRecipient > +initialBalOfRecipient)
+  })
 })
 
 
