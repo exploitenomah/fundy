@@ -13,17 +13,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@truffle/hdwallet-provider": "^2.1.4",
-    "ganache": "^7.4.3",
-    "mocha": "^10.2.0",
-    "solc": "^0.8.17",
-    "web3": "^1.8.1",
     "@next/font": "13.1.1",
+    "@truffle/hdwallet-provider": "^2.1.4",
     "eslint": "8.31.0",
     "eslint-config-next": "13.1.1",
+    "ganache": "^7.4.3",
+    "mocha": "^10.2.0",
     "next": "13.1.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "solc": "^0.8.17",
+    "web3": "^1.8.1"
   },
   "private": true,
   "devDependencies": {
