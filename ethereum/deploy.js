@@ -1,10 +1,11 @@
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 const Web3 = require('web3')
-const { interface, bytecode } = require('./contractBuilds/CampaignFactory.json')
+const { interface: contractInterface, bytecode } = require('./contractBuilds/CampaignFactory.json')
 const dotenv = require('dotenv')
-const { storeDeployedContractInfo } = require('./mongodb')
+const axios = require('axios')
 
-dotenv.config('./.env')
+
+dotenv.config('../.env')
 
 const provider = new HDWalletProvider(
    process.env.SECRET_PHRASE,
@@ -18,10 +19,22 @@ const deploy = async () => {
 
   console.log('attempting to deploy from account: ==>', + ' ' + accounts[0])
 
-  const deployment = await new web3.eth.Contract( interface )
-  .deploy({data: bytecode, arguments: []})
-  .send({ gas: 3000000, from: accounts[0]})
-  const storedContractData = await storeDeployedContractInfo({ abi: interface, address: deployment.options.address})
+  try{
+    const deployment = await new web3.eth.Contract( contractInterface )
+    .deploy({data: bytecode, arguments: []})
+    .send({ gas: 3000000, from: accounts[0]})
+
+    const done = await axios({
+      method: 'POST',
+      url: 'http:127.0.0.1:3000/api/contracts', 
+      body: {
+        abi: contractInterface, address: deployment.options.address
+      }
+    })
+    console.log(done.data, 'done.')
+  }catch(err){
+    console.log(err)
+  }
 }
 
 deploy()
