@@ -6,7 +6,6 @@ const solc = require('solc')
 const campaignPath = path.resolve(__dirname, 'contracts', 'Campaign.sol')
 const factoryPath = path.resolve(__dirname, 'contracts', 'Factory.sol')
 const contractPath = path.resolve(__dirname, 'contracts', 'Campaign.sol')
-const source = fs.readFileSync(contractPath, 'utf-8')
 const campaignSrc = fs.readFileSync(campaignPath, 'utf-8')
 const factorySrc = fs.readFileSync(factoryPath, 'utf-8')
 
