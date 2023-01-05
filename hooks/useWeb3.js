@@ -9,7 +9,6 @@ const useWeb3 = () => {
     return new Web3(ethereum)
   }, [ethereum])
 
-
   useEffect(() => {
     if(window){
       window.ethereum.request({ 
