@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 
 export const useCampaignFactory = () => {
   const [contractData, setContractData] = useState(null)
-  console.log(contractData,)
+
   const web3 = useWeb3()
   const campaignFactoryInterface = useMemo(() => {
     if(contractData !== null){
