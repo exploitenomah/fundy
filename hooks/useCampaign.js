@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 
 export const useCampaignFactory = () => {
   const [contractData, setContractData] = useState(null)
-  console.log(contractData,)
+
   const web3 = useWeb3()
   const campaignFactoryInterface = useMemo(() => {
     if(contractData !== null){
@@ -12,13 +12,15 @@ export const useCampaignFactory = () => {
         contractData.abi,
         contractData.address
       )
-    }
+    }else return null
   }, [contractData, web3.eth.Contract])
 
   const getContractData = useCallback(async () => {
    const res = await fetch('/api/contracts')
-   const { contract } = await res.json()
-   setContractData(contract)
+   if(res.status === 200){
+     const { contract } = await res.json()
+     setContractData(contract)
+   }
   }, [])
   
   useEffect(() => {
