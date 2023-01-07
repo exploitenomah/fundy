@@ -33,6 +33,18 @@ module.exports = {
       animation: {
         'defaultLoader': 'defaultLoader 1.5s ease-in-out infinite',
         'widthChange': 'widthChange 5s linear infinite'
+      },
+      backgroundImage: {
+        'hero-pattern': `linear-gradient(
+          rgba(216, 180, 254, 0.514), 
+          rgba(0, 0, 0, 0.55),
+          rgba(216, 180, 254, 0.314)), url(/hero.jpg)`,
+        'hero-pattern-mobile': `linear-gradient(
+          rgba(216, 180, 254, 0.514), 
+          rgba(0, 0, 0, 0.95),
+          rgba(216, 180, 254, 0.314)),
+          url(/hero-mobile.jpg)
+        `
       }
     },
   },
