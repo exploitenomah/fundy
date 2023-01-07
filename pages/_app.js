@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import { useCampaignFactory } from '../hooks/useCampaign'
 import DefaultLoader from '../components/Loader'
 import { useCallback, useEffect, useState } from 'react'
+import Layout from '../components/Layout'
 
 
 export default function App({ Component, pageProps }) {
@@ -25,16 +26,25 @@ export default function App({ Component, pageProps }) {
     getCampaigns()
   }, [getCampaigns])
 
-  if (campaignFactory === null) {
+  if (campaignFactory === 'null') {
     return (
       <div>
         <DefaultLoader>
           <h1 text='Loading Fundy...'
-            className='text-white relative font-black text-small uppercase before:content-[attr(text)] before:absolute before:text-purple-400 before:z-0 before:animate-widthChange before:overflow-hidden before:whitespace-nowrap before:w-full before:border-r before:border-r-current'>Loading Fundy...</h1>
+            className='text-white relative font-black text-small uppercase \n
+             before:content-[attr(text)] before:absolute before:text-purple-400 \n
+             before:z-0 before:animate-widthChange before:overflow-hidden \n
+             before:whitespace-nowrap before:w-full before:border-r before:border-r-current'>
+            Loading Fundy...
+          </h1>
         </DefaultLoader>
       </div>
     )
   } else {
-    return <Component campaignFactory={campaignFactory} {...pageProps} />
+    return (
+      <Layout title={Component.title}>
+        <Component campaignFactory={campaignFactory} {...pageProps} />
+      </Layout>
+    )
   }
 }
