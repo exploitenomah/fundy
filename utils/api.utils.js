@@ -13,6 +13,5 @@ export const connect = async (dbToConnect) => {
       };
     } catch (err) {
       console.error('UNABLE TO CONNECT TO DATABASE!!! ❌❌❌❌❌ ERROR: ==>>> ', err);
-      process.exit(1);
     } 
 } 
