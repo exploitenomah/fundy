@@ -16,10 +16,14 @@ export const useCampaignFactory = () => {
   }, [contractData, web3.eth.Contract])
 
   const getContractData = useCallback(async () => {
-   const res = await fetch('/api/contracts')
-   if(res.status === 200){
-     const { contract } = await res.json()
-     setContractData(contract)
+   try{
+    const res = await fetch('/api/contracts')
+    if(res.status === 200){
+      const { contract } = await res.json()
+      setContractData(contract)
+    }
+   }catch(err){
+    console.error(err)
    }
   }, [])
   
