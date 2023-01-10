@@ -28,7 +28,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
     "solc": "^0.8.17",
-    "web3": "^1.8.1"
+    "web3": "^1.7.4"
   },
   "private": true,
   "devDependencies": {
