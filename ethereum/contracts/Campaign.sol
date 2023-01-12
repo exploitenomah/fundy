@@ -11,6 +11,7 @@ contract Campaign {
         mapping(address => bool) approvers;
     }
     address public manager;
+    string public about;
     uint256 public minimumContribution;
     mapping(address => bool) public contributors;
     uint256 public contributorsCount;
@@ -21,12 +22,14 @@ contract Campaign {
         _;
     }
 
-    constructor(uint256 minimum, address creator) {
+    constructor(uint256 minimum, address creator, string memory desc) {
         manager = creator;
+        about = desc;
         minimumContribution = minimum;
     }
 
     function contribute() public payable {
+        require(msg.sender != manager);
         require(msg.value > minimumContribution);
         contributors[msg.sender] = true;
         contributorsCount++;
