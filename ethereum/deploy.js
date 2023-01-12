@@ -32,8 +32,10 @@ const deploy = async () => {
       }
     })
     console.log(done.data, 'done.')
+    process.exit()
   }catch(err){
     console.log(err)
+    process.exit()
   }
 }
 
