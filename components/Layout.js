@@ -15,17 +15,17 @@ const Navigation = ({ showMobileNav, closeMobileNav }) => {
 
 	return (
 		<>
-			<ul className="hidden md:flex gap-x-12">
+			<ul className="hidden md:flex md:gap-x-12">
 				{listItems.map(item => <li key={item.name}>
-					<SecondaryBtn as='li' >
+					<SecondaryBtn as='span' >
 						<Link href={item.path}>{item.name}</Link>
 					</SecondaryBtn>
 				</li>)}
 			</ul>
-			<ul className={`${showMobileNav ? 'translate-x-[0%]' : ''} transition-transform
+			<ul className={`${showMobileNav ? 'w-[80vw]' : 'w-0'} transition-all
         duration-300 bg-gradient-to-bl from-purple-400 to-black  text-white
         flex items-center justify-around z-[100] whitespace-nowrap shadow-white/30 shadow-lg
-        md:hidden fixed top-[2%] left-0 w-[80vw] h-[100px] translate-x-[-100%]`}>
+        md:hidden fixed top-[2%] left-0 h-[100px] overflow-hidden`}>
 				{listItems.map(item =>
 					<li key={item.name}>
 						<Link onClick={closeMobileNav} href={item.path}>
@@ -51,10 +51,15 @@ export default function Layout ({ children, title }) {
 		window.addEventListener('scroll', () => {
 			if (window.scrollY >= 60) setIsScrolling(true)
 			else setIsScrolling(false)
-      if(showMobileNav) window.document.body.classList.add('overflow-hidden')
-      else window.document.body.classList.remove('overflow-hidden')
 		})
-	}, [])
+    window.addEventListener('resize', () => {
+			if (window.innerWidth >= 768 && window.document.body.classList.contains('overflow-hidden'))
+        window.document.body.classList.remove('overflow-hidden')
+			else if (showMobileNav && window.innerWidth < 768) window.document.body.classList.add('overflow-hidden')
+		})
+    if(showMobileNav) window.document.body.classList.add('overflow-hidden')
+    if(!showMobileNav) window.document.body.classList.remove('overflow-hidden')
+	}, [showMobileNav])
 
 	return (
 		<>
@@ -65,7 +70,7 @@ export default function Layout ({ children, title }) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<div>
-				<header className={`sticky ${isScrolling ? ' bg-black/80' : 'bg-black/40'} top-0 left-0 \n
+				<header className={`sticky ${isScrolling ? 'bg-black/80' : 'bg-black/50'} top-0 left-0 \n
          right-0 w-full transition-all z-[90]`}>
 					<div className='w-[85vw] py-5 flex justify-between items-center mx-auto '>
 						<div className={`${dancing_script.className} text-5xl text-white capitalize`}>
@@ -83,7 +88,7 @@ export default function Layout ({ children, title }) {
 						<Navigation showMobileNav={showMobileNav} closeMobileNav={toggleNavShown} />
 					</div>
 				</header>
-        <div className='min-h-[90vh] text-white'>
+        <div className='min-h-[80vh] text-white'>
 		  		{children}
         </div>
 				<footer className={'bg-black w-screen px-8 py-5 flex flex-col gap-y-2 border-t border-t-purple-300/30 justify-center items-center transition-all'}>
