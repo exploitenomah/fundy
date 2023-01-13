@@ -50,4 +50,3 @@ module.exports = {
   },
   plugins: [require('@tailwindcss/typography'),]
 }
-/** @type {import('tailwindcss').Config} */
