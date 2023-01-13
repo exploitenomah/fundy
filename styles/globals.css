@@ -14,3 +14,14 @@ body{
     background-size: contain;
     min-height: 100vh;
 }
+
+input, textarea{
+  background-color: transparent;
+}
+
+*:focus{
+  outline-style: dotted;
+  outline-color: rgba(216, 180, 254, 0.747);
+  outline-width: 1px;
+  outline-offset: 3px;
+}
