@@ -52,13 +52,13 @@ export default function Layout ({ children, title }) {
 			if (window.scrollY >= 60) setIsScrolling(true)
 			else setIsScrolling(false)
 		})
-    window.addEventListener('resize', () => {
+		window.addEventListener('resize', () => {
 			if (window.innerWidth >= 768 && window.document.body.classList.contains('overflow-hidden'))
-        window.document.body.classList.remove('overflow-hidden')
+				window.document.body.classList.remove('overflow-hidden')
 			else if (showMobileNav && window.innerWidth < 768) window.document.body.classList.add('overflow-hidden')
 		})
-    if(showMobileNav) window.document.body.classList.add('overflow-hidden')
-    if(!showMobileNav) window.document.body.classList.remove('overflow-hidden')
+		if(showMobileNav) window.document.body.classList.add('overflow-hidden')
+		if(!showMobileNav) window.document.body.classList.remove('overflow-hidden')
 	}, [showMobileNav])
 
 	return (
@@ -74,8 +74,8 @@ export default function Layout ({ children, title }) {
          right-0 w-full transition-all z-[90]`}>
 					<div className='w-[85vw] py-5 flex justify-between items-center mx-auto '>
 						<div className={`${dancing_script.className} text-5xl text-white capitalize`}>
-              <Link href='/'>Fundy</Link>
-            </div>
+							<Link href='/'>Fundy</Link>
+						</div>
 						<button
 							onClick={toggleNavShown}
 							className="text-white md:hidden relative block w-8 h-8"
@@ -88,9 +88,9 @@ export default function Layout ({ children, title }) {
 						<Navigation showMobileNav={showMobileNav} closeMobileNav={toggleNavShown} />
 					</div>
 				</header>
-        <div className='min-h-[80vh] text-white'>
-		  		{children}
-        </div>
+				<div className='min-h-[80vh] text-white'>
+					{children}
+				</div>
 				<footer className={'bg-black w-screen px-8 py-5 flex flex-col gap-y-2 border-t border-t-purple-300/30 justify-center items-center transition-all'}>
 					<div className={`${dancing_script.className} text-3xl text-white capitalize`}>Fundy</div>
 					<small className="text-white">&copy; fundy 2023</small>

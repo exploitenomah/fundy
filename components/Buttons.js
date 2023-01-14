@@ -33,7 +33,7 @@ export const PrimaryBtn = ({ children, className, ...otherProps}) => {
 
 	return (
 		<ButtonBase 
-      {...otherProps}
+			{...otherProps}
 			className={`border uppercase text-sm font-bold px-4 py-3 relative bg-transparent text-white
     before:border-t before:border-l after:border-b after:border-r hover:scale-[101.5%] 
     transition-all duration-500
@@ -53,7 +53,7 @@ export const PrimaryBtn = ({ children, className, ...otherProps}) => {
 export const SecondaryBtn = ({ children, className, ...otherProps }) => {
 	return (
 		<ButtonBase 
-      {...otherProps}
+			{...otherProps}
 			className={`relative uppercase text-center bg-transparent text-white
     before:border-t before:border-l after:border-b after:border-r hover:scale-[101.5%] 
     transition-all duration-500

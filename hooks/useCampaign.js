@@ -37,5 +37,5 @@ export const useCampaignFactory = () => {
 		}
 	}, [contractData, getContractData])
 
-	return campaignFactoryInterface
+	return { campaignFactory: campaignFactoryInterface, web3}
 }
