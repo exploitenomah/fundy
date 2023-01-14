@@ -1,49 +1,64 @@
 import '../styles/globals.css'
 import { useCampaignFactory } from '../hooks/useCampaign'
-import DefaultLoader from '../components/Loader'
+import DefaultLoader, { TextLoader } from '../components/Loader'
 import { useCallback, useEffect, useState } from 'react'
 import Layout from '../components/Layout'
-
+import Notification from '../components/Notificaton'
 
 export default function App({ Component, pageProps }) {
-  const campaignFactory = useCampaignFactory()
+  const { campaignFactory, web3 } = useCampaignFactory()
 
   const [store, setStore] = useState({
-    campaigns: [],
-
+  	campaigns: [],
+    message: '',
+    showMsg: false,
+    msgStatus: 'info'
   })
 
   const getCampaigns = useCallback(async () => {
-    if (campaignFactory) {
-      const campaigns = await campaignFactory.methods.getDeployedCampaigns().call()
-      setStore(prev => ({
-        ...prev, campaigns
-      }))
-    }
+  	if (campaignFactory) {
+  		const campaigns = await campaignFactory.methods.getDeployedCampaigns().call()
+  		setStore(prev => ({
+  			...prev, campaigns
+  		}))
+  	}
   }, [campaignFactory])
 
   useEffect(() => {
-    getCampaigns()
-  }, [getCampaigns])
+  	getCampaigns()
+    const removeMsg = store.showMsg ? setTimeout(() => {
+      setStore(prev => ({
+        ...prev, msgStatus: 'info', message: '', showMsg: false
+      }))
+    }, 10000) : undefined
 
-  if (campaignFactory === 'null') {
+    return () => {
+      clearTimeout(removeMsg)
+    }
+  }, [getCampaigns, store.showMsg])
+
+  if ('campaignFactory' === null) {
     return (
-      <div>
+      <div className='h-screen w-screen flex flex-col justify-center items-center'>
         <DefaultLoader>
-          <h1 text='Loading Fundy...'
-            className='text-white relative font-black text-small uppercase \n
-             before:content-[attr(text)] before:absolute before:text-purple-400 \n
-             before:z-0 before:animate-widthChange before:overflow-hidden \n
-             before:whitespace-nowrap before:w-full before:border-r before:border-r-current'>
-            Loading Fundy...
-          </h1>
+          <TextLoader text={'Loading Fundy...'} />
         </DefaultLoader>
       </div>
     )
   } else {
     return (
       <Layout title={Component.title}>
-        <Component campaignFactory={campaignFactory} {...pageProps} />
+          <Notification 
+           hide={() => setStore(prev => ({...prev, showMsg: false}))}
+           message={store.message} 
+           show={store.showMsg} 
+           status={store.msgStatus} />
+          <Component
+            web3={web3}
+            store={store}
+            setStore={setStore}
+            factory={campaignFactory} 
+            {...pageProps} />
       </Layout>
     )
   }
