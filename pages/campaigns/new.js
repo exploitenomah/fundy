@@ -5,15 +5,13 @@ import { useState, useCallback } from 'react'
 import DefaultLoader, { TextLoader } from '../../components/Loader'
 import { useRouter } from 'next/router'
 
-export default function NewCampaign({ setStore, factory, web3, store }) {
+export default function NewCampaign({ setStore, factory, web3 }) {
 	const router = useRouter()
 	const [newCampaign, setNewCampaign] = useState({
 		minContribution: 0,
 		description: ''
 	})
 	const [isLoading, setIsLoading] = useState(false)
-
-	console.log(store)
 
 	const handleChange = useCallback((e) => {
 		setNewCampaign(prev => ({

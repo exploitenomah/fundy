@@ -15,14 +15,11 @@ const useWeb3 = () => {
 			}) 
 			setEthereum(window.ethereum)     
 		}
+		if(typeof window === 'undefined' && !ethereum){
+			const provider = new Web3.providers.HttpProvider('http://127.0.0.1:3000')
+			setEthereum(provider)
+		}
 	}, [])
-
-  if(!ethereum){
-    const provider = new Web3.providers.HttpProvider(
-      process.env.NEXT_PUBLIC_INFURA_URL
-    )
-    setEthereum(provider)
-  }
 	return web3
 }
 

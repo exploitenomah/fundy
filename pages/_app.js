@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import useWeb3 from '../hooks/useWeb3'
 import { useCampaignFactory } from '../hooks/useCampaign'
 import DefaultLoader, { TextLoader } from '../components/Loader'
 import { useCallback, useEffect, useState } from 'react'
@@ -6,7 +7,8 @@ import Layout from '../components/Layout'
 import Notification from '../components/Notificaton'
 
 export default function App({ Component, pageProps }) {
-	const { campaignFactory, web3 } = useCampaignFactory()
+	const web3 = useWeb3()
+	const { campaignFactory } = useCampaignFactory(web3)
 
 	const [store, setStore] = useState({
 		campaigns: [],
@@ -35,7 +37,7 @@ export default function App({ Component, pageProps }) {
 		return () => {
 			clearTimeout(removeMsg)
 		}
-	}, [getCampaigns, store.showMsg])
+	}, [store.showMsg])
 
 	if (campaignFactory === null) {
 		return (

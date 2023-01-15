@@ -1,19 +1,11 @@
 
-import useWeb3 from './useWeb3'
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import useNewContract from './useNewContract'
+import { useEffect, useState, useCallback } from 'react'
 
-export const useCampaignFactory = () => {
+export const useCampaignFactory = ( web3 ) => {
 	const [contractData, setContractData] = useState(null)
 
-	const web3 = useWeb3()
-	const campaignFactoryInterface = useMemo(() => {
-		if(contractData !== null){
-			return new web3.eth.Contract(
-				contractData.abi,
-				contractData.address
-			)
-		}else return null
-	}, [contractData, web3.eth.Contract])
+	const newContract = useNewContract({ contractData, web3})
 
 	const getContractData = useCallback(async () => {
 		try{
@@ -37,5 +29,9 @@ export const useCampaignFactory = () => {
 		}
 	}, [contractData, getContractData])
 
-	return { campaignFactory: campaignFactoryInterface, web3}
+	if(newContract) {
+		return { campaignFactory: newContract.contract, web3: newContract.web3}
+	}else{
+		return { campaignFactory: null, web3: null}
+	}
 }
