@@ -49,7 +49,7 @@ const writeContractToExternalFile = () => {
 	})
 	fs.writeFileSync(campaignPath, CampaignJSON, 'utf-8')
 	fs.writeFileSync(campaignFactoryPath, CampaignFactoryJSON, 'utf-8')
-  process.exit()
+	process.exit()
 }
 
 const compiledDirectory = path.resolve(__dirname, 'contractBuilds')
