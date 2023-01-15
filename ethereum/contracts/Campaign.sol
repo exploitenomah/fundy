@@ -80,15 +80,17 @@ contract Campaign {
             uint256,
             uint256,
             address,
-            uint256
+            uint256,
+						string memory
         )
     {
-        return (
+        return( 
             address(this).balance,
             minimumContribution,
             requests.length,
             manager,
-            contributorsCount
-        );
+            contributorsCount,
+						about
+					);
     }
 }
