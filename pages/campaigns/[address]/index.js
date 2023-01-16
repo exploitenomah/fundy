@@ -5,7 +5,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import useNewContract from '../../../hooks/useNewContract'
 import TypographyBase from '../../../components/Typography'
 import { H2, H3 } from '../../../components/Headings'
-import ContributionButton from '../../../components/ContributionButton'
+import ContributionForm from '../../../components/ContributeModal'
+import { PrimaryBtn } from '../../../components/Buttons'
+
 
 const InfoCard = ({ title, details, info, children }) => {
 	return (
@@ -21,12 +23,13 @@ const InfoCard = ({ title, details, info, children }) => {
 	)
 }
 
-export default function Campaign({ web3 }) {
+export default function Campaign({ web3, setStore }) {
 
 	const router = useRouter()
 	const address = useMemo(() => router.query.address, [router.query])
 	const { contract } = useNewContract({ contractData: { abi: campaignJson.interface, address }, web3 })
 	const [userAccount, setUserAccount] = useState(null)
+	const [showContributionForm, setShowContributionForm] = useState(false)
 
 	const [contractSummary, setContractSummary] = useState({
 		balance: null,
@@ -65,14 +68,13 @@ export default function Campaign({ web3 }) {
 
 	return (
 		<>
-			<main className='mt-32 max-w-[85vw] mx-auto'>
+			<main className='my-12 max-w-[85vw] mx-auto'>
 				<div>
 					<div className='my-8 flex items-center justify-start flex-wrap gap-y-8 gap-x-32 lg:justify-between'>
 						<H2 as='h1' className='text-md'>
 							Campaign deployed at <span className='text-white/60 max-w-[400px] md:text-[1.6rem] overflow-hidden text-ellipsis text-md block'>{address}</span>
 						</H2>
-						<ContributionButton />
-					</div>
+						<PrimaryBtn onClick={() => setShowContributionForm(true)} className='text-purple-300'>Contribute</PrimaryBtn>					</div>
 					<div className='my-8 flex justify-start flex-wrap gap-y-8 gap-x-8'>
 						<InfoCard
 							details={'Manager'}
@@ -96,16 +98,26 @@ export default function Campaign({ web3 }) {
 							title={`${contractSummary.minimumContribution} wei`}
 							info={'This is the minimum amount that can be contributed to this campaign.'} />
 						<InfoCard
+							details={'Total Count Of Spending Requests'}
+							title={contractSummary.requestsLength}
+							info={'Spending requests are requests made by the manager of the contract to withdraw funds.'}>
+							<PrimaryBtn onClick={() => router.push(`/campaigns/${address}/requests`)}>View Requests</PrimaryBtn>
+						</InfoCard>
+						<InfoCard
 							details={'Current amount of contributors'}
 							title={contractSummary.totalContributors}
 							info={'The number of people who have contributed to this campaign.'} />
-						<InfoCard
-							details={'Total Count Of Spending Requests'}
-							title={contractSummary.requestsLength}
-							info={'Spending requests are requests made by the manager of the contract to withdraw funds.'} />
 					</div>
 				</div>
 			</main>
+			<ContributionForm 
+				show={showContributionForm}
+				close={() => setShowContributionForm(false)}
+				campaign={contract}
+				setStore={setStore}
+				account={userAccount}
+				web3={web3}
+			/>
 		</>
 	)
 }
