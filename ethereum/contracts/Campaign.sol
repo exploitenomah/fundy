@@ -22,7 +22,11 @@ contract Campaign {
         _;
     }
 
-    constructor(uint256 minimum, address creator, string memory desc) {
+    constructor(
+        uint256 minimum,
+        address creator,
+        string memory desc
+    ) {
         manager = creator;
         about = desc;
         minimumContribution = minimum;
@@ -66,5 +70,27 @@ contract Campaign {
 
         request.recipient.transfer(request.value);
         request.complete = true;
+    }
+
+    function getSummary()
+        public
+        view
+        returns (
+            uint256,
+            uint256,
+            uint256,
+            address,
+            uint256,
+						string memory
+        )
+    {
+        return( 
+            address(this).balance,
+            minimumContribution,
+            requests.length,
+            manager,
+            contributorsCount,
+						about
+					);
     }
 }
