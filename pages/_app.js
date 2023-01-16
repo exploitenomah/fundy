@@ -11,6 +11,7 @@ export default function App({ Component, pageProps }) {
 	const { campaignFactory } = useCampaignFactory(web3)
 
 	const [store, setStore] = useState({
+		hasFetchedCampaigns: false,
 		campaigns: [],
 		message: '',
 		showMsg: false,
@@ -21,13 +22,13 @@ export default function App({ Component, pageProps }) {
 		if (campaignFactory) {
 			const campaigns = await campaignFactory.methods.getDeployedCampaigns().call()
 			setStore(prev => ({
-				...prev, campaigns
+				...prev, campaigns, hasFetchedCampaigns: true
 			}))
 		}
 	}, [campaignFactory])
 
 	useEffect(() => {
-		getCampaigns()
+		!store.hasFetchedCampaigns && getCampaigns()
 		const removeMsg = store.showMsg ? setTimeout(() => {
 			setStore(prev => ({
 				...prev, msgStatus: 'info', message: '', showMsg: false
@@ -37,7 +38,7 @@ export default function App({ Component, pageProps }) {
 		return () => {
 			clearTimeout(removeMsg)
 		}
-	}, [store.showMsg])
+	}, [store.showMsg, store.hasFetchedCampaigns, getCampaigns])
 
 	if (campaignFactory === null) {
 		return (
