@@ -15,7 +15,8 @@ export default function App({ Component, pageProps }) {
 		campaigns: [],
 		message: '',
 		showMsg: false,
-		msgStatus: 'info'
+		msgStatus: 'info',
+		primaryAccount: null
 	})
 
 	const getCampaigns = useCallback(async () => {
@@ -27,6 +28,14 @@ export default function App({ Component, pageProps }) {
 		}
 	}, [campaignFactory])
 
+	const getPrimaryAccount = useCallback(async () => {
+		if(web3){
+			const accounts = await web3.eth.getAccounts()
+			const [primaryAccount] = accounts
+			setStore(prev => ({ ...prev, primaryAccount }))
+		}
+	}, [web3])
+
 	useEffect(() => {
 		!store.hasFetchedCampaigns && getCampaigns()
 		const removeMsg = store.showMsg ? setTimeout(() => {
@@ -35,12 +44,14 @@ export default function App({ Component, pageProps }) {
 			}))
 		}, 10000) : undefined
 
+		store.primaryAccount === null && web3 && getPrimaryAccount()
+
 		return () => {
 			clearTimeout(removeMsg)
 		}
-	}, [store.showMsg, store.hasFetchedCampaigns, getCampaigns])
+	}, [store.showMsg, store.hasFetchedCampaigns, store.primaryAccount, web3, getCampaigns])
 
-	if (campaignFactory === null) {
+	if (campaignFactory === null && web3 === undefined) {
 		return (
 			<div className='h-screen w-screen flex flex-col justify-center items-center'>
 				<DefaultLoader>
