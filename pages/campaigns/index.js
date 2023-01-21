@@ -31,7 +31,7 @@ export default function Campaigns({ store }) {
 							<span 
 								title={campaign}
 								className='inline-block p-0 m-0 w-[250px] overflow-hidden text-ellipsis'>{campaign}</span>
-							<Link className='my-8 w-max-content' passHref href={`/campaigns/${campaign}`}>
+							<Link className='my-8 w-fit inline-block' passHref href={`/campaigns/${campaign}`}>
 								<SecondaryBtn className='text-purple-300 px-2 py-2 border border-current hover:border-transparent' as='span'>View Campaign</SecondaryBtn>
 							</Link>
 						</li>
