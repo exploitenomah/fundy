@@ -10,7 +10,7 @@ const Navigation = ({ showMobileNav, closeMobileNav }) => {
 	const listItems = [{
 		name: 'campaigns', path: '/campaigns'
 	}, {
-		name: 'create mine', path: 'campaigns/new'
+		name: 'create mine', path: '/campaigns/new'
 	}]
 
 	return (
@@ -92,7 +92,7 @@ export default function Layout ({ children, title }) {
 					{children}
 				</div>
 				<footer className={'bg-black w-screen px-8 py-5 flex flex-col gap-y-2 border-t border-t-purple-300/30 justify-center items-center transition-all'}>
-					<div className={`${dancing_script.className} text-3xl text-white capitalize`}>Fundy</div>
+					<Link href='/'><span className={`${dancing_script.className} text-3xl text-white capitalize`}>Fundy</span></Link>
 					<small className="text-white">&copy; fundy 2023</small>
 				</footer>
 			</div>
