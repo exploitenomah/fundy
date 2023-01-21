@@ -59,3 +59,43 @@ export const H3 = ({
 		</h3>
 	)
 }
+
+export const H4 = ({
+	children, className, as, ...props
+}) => {
+	if(as){
+		return (
+			createElement(
+				as,
+				{...props, className: `font-medium leading-tight text-2xl ${className}`},
+				children
+			)
+		)
+	}
+
+	return (
+		<h4 {...props} className={`font-medium leading-tight text-xl ${className}`}>
+			{children}
+		</h4>
+	)
+}
+
+export const H5 = ({
+	children, className, as, ...props
+}) => {
+	if(as){
+		return (
+			createElement(
+				as,
+				{...props, className: `font-medium leading-tight text-2xl ${className}`},
+				children
+			)
+		)
+	}
+
+	return (
+		<h4 {...props} className={`font-bold leading-tight text-lg ${className}`}>
+			{children}
+		</h4>
+	)
+}
