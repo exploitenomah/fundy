@@ -6,7 +6,7 @@ import { H3 } from './Headings'
 import DefaultLoader, { TextLoader } from './Loader'
 
 export default function ContributionForm({
-	show, campaign, account, setStore, close, web3
+	show, campaign, primaryAccount, setStore, close, web3
 }) {
 
 	const [contribution, setContribution] = useState(0)
@@ -25,7 +25,7 @@ export default function ContributionForm({
 		try{
 			setIsLoading(true)
 			const contributed = await campaign.methods.contribute().send({
-				from: account,
+				from: primaryAccount,
 				gas: 3000000,
 				value: web3.utils.toWei(contribution, 'ether')
 			})
@@ -68,9 +68,7 @@ export default function ContributionForm({
 				<div role='group' className='flex flex-col gap-y-2'>
 					<label htmlFor='contribution'>Contribution (in ether)</label>
 					<input
-						autoFocus
 						required
-						key='contribution'
 						value={contribution}
 						onChange={handleChange}
 						name='contribution'
