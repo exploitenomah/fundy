@@ -53,7 +53,7 @@ export default function Home() {
 				</TypographyBase>
 				<TypographyBase className='text-slate-100'>Get started now!</TypographyBase>
 				<TypographyBase className='text-white/100'>
-            Create a&nbsp;&nbsp;&nbsp;<PrimaryBtn className='text-purple-200'>new campaign</PrimaryBtn>
+            Create a&nbsp;&nbsp;&nbsp;<Link href='/campaigns/new'><PrimaryBtn as='span' className='text-purple-200'>new campaign</PrimaryBtn></Link>
 				</TypographyBase>
 			</section>
 		</div>
