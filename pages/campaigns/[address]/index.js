@@ -101,7 +101,10 @@ export default function Campaign({ web3, setStore }) {
 							details={'Total Count Of Spending Requests'}
 							title={contractSummary.requestsLength}
 							info={'Spending requests are requests made by the manager of the contract to withdraw funds.'}>
-							<PrimaryBtn onClick={() => router.push(`/campaigns/${address}/requests`)}>View Requests</PrimaryBtn>
+							<PrimaryBtn 
+								onClick={() => router.push(`/campaigns/${address}/requests`)}
+								className='max-w-[180px] mb-2 mt-3 text-purple-200'
+							>View Requests</PrimaryBtn>
 						</InfoCard>
 						<InfoCard
 							details={'Current amount of contributors'}
