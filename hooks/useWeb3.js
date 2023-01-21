@@ -5,7 +5,7 @@ import Web3 from 'web3'
 const useWeb3 = () => {
 	const [ethereum, setEthereum] = useState(null)
 	const web3 = useMemo(() => {
-		return new Web3(ethereum)
+		if(ethereum) return new Web3(ethereum)
 	}, [ethereum])
 
 	useEffect(() => {
