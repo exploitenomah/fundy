@@ -59,7 +59,7 @@ export default function App({ Component, pageProps }) {
 		)
 	} else {
 		return (
-			<div className='animate-fade-in'>
+			<>
 				<Layout title={Component.title}>
 					<Notification 
 						hide={() => setStore(prev => ({...prev, showMsg: false}))}
@@ -73,7 +73,7 @@ export default function App({ Component, pageProps }) {
 						factory={campaignFactory} 
 						{...pageProps} />
 				</Layout>
-			</div>
+			</>
 		)
 	}
 }

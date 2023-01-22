@@ -7,7 +7,7 @@ export default function Home() {
 
 
 	return (
-		<div className='text-white'>
+		<div className='text-white animate-fade-in'>
 			<main className='min-h-[95vh] flex items-center bg-hero-pattern-mobile md:bg-hero-pattern bg-cover bg-no-repeat bg-blend-multiply bg-center'>
 				<div className='w-[85vw] relative mx-auto md:ml-24 text-center md:text-left'>
 					<h1 className='text-white text-4xl md:text-7xl font-light mt-30'>
