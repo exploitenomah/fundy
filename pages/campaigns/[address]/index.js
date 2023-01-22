@@ -1,13 +1,14 @@
 
 import campaignJson from '../../../ethereum/contractBuilds/Campaign.json'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import useNewContract from '../../../hooks/useNewContract'
 import TypographyBase from '../../../components/Typography'
 import { H2, H3 } from '../../../components/Headings'
 import ContributionForm from '../../../components/ContributeModal'
 import { PrimaryBtn, SecondaryBtn } from '../../../components/Buttons'
 import CreateRequestForm from '../../../components/CreateRequestModal'
+import useSummary from '../../../hooks/useSummary'
 
 
 const InfoCard = ({ title, details, info, children }) => {
@@ -31,37 +32,10 @@ export default function Campaign({ web3, setStore, store }) {
 	const { contract } = useNewContract({ contractData: { abi: campaignJson.interface, address }, web3 })
 	const [showContributionForm, setShowContributionForm] = useState(false)
 	const [showCreateRequestForm, setShowCreateRequestForm] = useState(false)
-	const [contractSummary, setContractSummary] = useState({
-		balance: null,
-		minimumContribution: null,
-		requestsLength: null,
-		manager: null,
-		totalContributors: null
-	})
+	const { contractSummary, getContractSummary } = useSummary(web3)
 	const isManager = useMemo(() =>
 		store.primaryAccount?.toLowerCase() === contractSummary.manager?.toLowerCase(), 
 	[store.primaryAccount, contractSummary?.manager])
-	
-	const getContractSummary = useCallback(async () => {
-		if(contract.options.address){
-			const summary = await contract.methods.getSummary().call()
-			setContractSummary(prev => ({
-				...prev,
-				balance: web3.utils.fromWei(summary[0], 'ether'),
-				minimumContribution: summary[1],
-				requestsLength: summary[2],
-				manager: summary[3],
-				totalContributors: summary[4],
-				about: summary[5]
-			}))
-		}
-	}, [contract.options.address, contract.methods.getSummary])
-
-	useEffect(() => {
-		if (contractSummary.manager === null) {
-			getContractSummary()
-		}
-	}, [address, contractSummary.manager, getContractSummary])
 	
 	return (
 		<>
@@ -122,7 +96,10 @@ export default function Campaign({ web3, setStore, store }) {
 			{!isManager && 
 			<ContributionForm 
 				show={showContributionForm}
-				close={() => setShowContributionForm(false)}
+				close={() => {
+					setShowContributionForm(false)
+					getContractSummary()
+				}}
 				campaign={contract}
 				setStore={setStore}
 				primaryAccount={store.primaryAccount}
