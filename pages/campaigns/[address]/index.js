@@ -100,7 +100,7 @@ export default function Campaign({ web3, setStore, store }) {
 							<div className='flex flex-wrap gap-x-6'>
 								{contractSummary.requestsLength > 0 ? <SecondaryBtn 
 									onClick={() => router.push(`/campaigns/${address}/requests?count=${contractSummary.requestsLength}`)}
-									className='px-4 text-sm mb-2 mt-3 text-purple-200 border border-current '>
+									className='px-4 text-sm mb-2 mt-3 text-purple-200 border border-current py-2'>
 									View Requests
 								</SecondaryBtn> :
 									<TypographyBase className='text-white/80' as='small'>No spending requests have been created</TypographyBase>}
