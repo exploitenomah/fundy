@@ -31,7 +31,6 @@ export default function Campaign({ web3, setStore, store }) {
 	const { contract } = useNewContract({ contractData: { abi: campaignJson.interface, address }, web3 })
 	const [showContributionForm, setShowContributionForm] = useState(false)
 	const [showCreateRequestForm, setShowCreateRequestForm] = useState(false)
-
 	const [contractSummary, setContractSummary] = useState({
 		balance: null,
 		minimumContribution: null,
@@ -39,7 +38,10 @@ export default function Campaign({ web3, setStore, store }) {
 		manager: null,
 		totalContributors: null
 	})
-
+	const isManager = useMemo(() =>
+		store.primaryAccount?.toLowerCase() === contractSummary.manager?.toLowerCase(), 
+	[store.primaryAccount, contractSummary?.manager])
+	
 	const getContractSummary = useCallback(async () => {
 		if(contract.options.address){
 			const summary = await contract.methods.getSummary().call()
@@ -69,14 +71,14 @@ export default function Campaign({ web3, setStore, store }) {
 						<H2 as='h1' className='text-md'>
 							Campaign deployed at <span className='text-white/60 max-w-[400px] md:text-[1.6rem] overflow-hidden text-ellipsis text-md block'>{address}</span>
 						</H2>
-						<PrimaryBtn onClick={() => setShowContributionForm(true)} className='text-purple-300'>Contribute</PrimaryBtn>
+						{!isManager && <PrimaryBtn onClick={() => setShowContributionForm(true)} className='text-purple-300'>Contribute</PrimaryBtn>}
 					</div>
 					<div className='my-8 flex justify-start flex-wrap gap-y-8 gap-x-8'>
 						<InfoCard
 							details={'Manager'}
 							title={contractSummary.manager}
 							info={'The manager is the creator of this contract and can create requests to withdraw funds.'}>
-							{store.primaryAccount?.toLowerCase() === contractSummary.manager?.toLowerCase() ?
+							{isManager ?
 								<small className='text-purple-100'>
 									You are the manager of this campaign.
 								</small> : null}
@@ -117,6 +119,7 @@ export default function Campaign({ web3, setStore, store }) {
 					</div>
 				</div>
 			</main>
+			{!isManager && 
 			<ContributionForm 
 				show={showContributionForm}
 				close={() => setShowContributionForm(false)}
@@ -124,7 +127,7 @@ export default function Campaign({ web3, setStore, store }) {
 				setStore={setStore}
 				primaryAccount={store.primaryAccount}
 				web3={web3}
-			/>
+			/>}
 			<CreateRequestForm
 				show={showCreateRequestForm}
 				close={() => setShowCreateRequestForm(false)}
