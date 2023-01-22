@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import useNewContract from '../../../hooks/useNewContract'
 // import TypographyBase from '../../../components/Typography'
 import { H2, H3, H4, H5 } from '../../../components/Headings'
-import DefaultLoader from '../../../components/Loader'
+import DefaultLoader, { TextLoader } from '../../../components/Loader'
 import { ButtonBase } from '../../../components/Buttons'
 // import ContributionForm from '../../../components/ContributeModal'
 // import { PrimaryBtn } from '../../../components/Buttons'
@@ -103,7 +103,10 @@ export default function Requests({ web3, setStore, store }) {
 
 	if (isLoading) {
 		return (
-			<DefaultLoader />
+			<main className='flex flex-col gap-y-4 justify-center items-center h-[75vh]'>
+				<DefaultLoader />
+				<TextLoader text='Loading Requests'/>
+			</main>
 		)
 	}
 	return (
