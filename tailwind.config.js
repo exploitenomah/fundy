@@ -41,7 +41,7 @@ module.exports = {
 			animation: {
 				'defaultLoader': 'defaultLoader 1.5s ease-in-out infinite',
 				'widthChange': 'widthChange 5s linear infinite',
-				'fade-in': 'fadeIn 3s linear 1',			},
+				'fade-in': 'fadeIn 2s linear 1',			},
 			backgroundImage: {
 				'hero-pattern': `linear-gradient(
           rgba(216, 180, 254, 0.514), 
