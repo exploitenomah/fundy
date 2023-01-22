@@ -36,7 +36,7 @@ export default function App({ Component, pageProps }) {
 				...prev, msgStatus: 'info', message: '', showMsg: false
 			}))
 		}, 10000) : undefined
-
+		
 		return () => {
 			clearTimeout(removeMsg)
 		}

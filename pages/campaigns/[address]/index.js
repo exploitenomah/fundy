@@ -60,7 +60,7 @@ export default function Campaign({ web3, setStore, store }) {
 			getContractSummary()
 		}
 	}, [address, contractSummary.manager, getContractSummary])
-
+	
 	return (
 		<>
 			<main className='my-12 max-w-[85vw] mx-auto animate-fade-in'>
@@ -76,7 +76,7 @@ export default function Campaign({ web3, setStore, store }) {
 							details={'Manager'}
 							title={contractSummary.manager}
 							info={'The manager is the creator of this contract and can create requests to withdraw funds.'}>
-							{store.primaryAccount === contractSummary.manager ?
+							{store.primaryAccount?.toLowerCase() === contractSummary.manager?.toLowerCase() ?
 								<small className='text-purple-100'>
 									You are the manager of this campaign.
 								</small> : null}
