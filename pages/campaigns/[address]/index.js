@@ -63,7 +63,7 @@ export default function Campaign({ web3, setStore, store }) {
 
 	return (
 		<>
-			<main className='my-12 max-w-[85vw] mx-auto'>
+			<main className='my-12 max-w-[85vw] mx-auto animate-fade-in'>
 				<div>
 					<div className='my-8 flex items-center justify-start flex-wrap gap-y-8 gap-x-32 lg:justify-between'>
 						<H2 as='h1' className='text-md'>

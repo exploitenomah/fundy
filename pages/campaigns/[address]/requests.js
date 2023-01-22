@@ -108,7 +108,7 @@ export default function Requests({ web3, setStore, store }) {
 	}
 	return (
 		<>
-			<main className='my-12 max-w-[85vw] mx-auto'>
+			<main className='my-12 max-w-[85vw] mx-auto animate-fade-in'>
 				<div className='my-8 flex items-center justify-start flex-wrap gap-y-8 gap-x-32 lg:justify-between'>
 					<H2 as='h1' className='text-md'>
 						Requests for campaign deployed at <span className='text-white/60 max-w-[400px] md:text-[1.6rem] overflow-hidden text-ellipsis text-md block'>{address}</span>
