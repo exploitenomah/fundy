@@ -29,12 +29,6 @@ export default function App({ Component, pageProps }) {
 		}
 	}, [campaignFactory])
 
-	const updatePrimaryAccount = useCallback(async () => {
-		if(primaryAccount !== store.primaryAccount){
-			setStore(prev => ({ ...prev, primaryAccount }))
-		}
-	}, [primaryAccount, store.primaryAccount])
-
 	useEffect(() => {
 		!store.hasFetchedCampaigns && getCampaigns()
 		const removeMsg = store.showMsg ? setTimeout(() => {
@@ -42,7 +36,6 @@ export default function App({ Component, pageProps }) {
 				...prev, msgStatus: 'info', message: '', showMsg: false
 			}))
 		}, 10000) : undefined
-		updatePrimaryAccount()
 
 		return () => {
 			clearTimeout(removeMsg)
@@ -68,7 +61,7 @@ export default function App({ Component, pageProps }) {
 						status={store.msgStatus} />
 					<Component
 						web3={web3}
-						store={store}
+						store={{...store, primaryAccount}}
 						setStore={setStore}
 						factory={campaignFactory} 
 						{...pageProps} />
