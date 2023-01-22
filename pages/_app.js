@@ -7,7 +7,7 @@ import Layout from '../components/Layout'
 import Notification from '../components/Notificaton'
 
 export default function App({ Component, pageProps }) {
-	const web3 = useWeb3()
+	const { web3, primaryAccount } = useWeb3()
 	const { campaignFactory } = useCampaignFactory(web3)
 
 	const [store, setStore] = useState({
@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }) {
 		message: '',
 		showMsg: false,
 		msgStatus: 'info',
-		primaryAccount: null
+		primaryAccount,
 	})
 
 	const getCampaigns = useCallback(async () => {
@@ -28,13 +28,11 @@ export default function App({ Component, pageProps }) {
 		}
 	}, [campaignFactory])
 
-	const getPrimaryAccount = useCallback(async () => {
-		if(web3){
-			const accounts = await web3.eth.getAccounts()
-			const [primaryAccount] = accounts
+	const updatePrimaryAccount = useCallback(async () => {
+		if(primaryAccount !== store.primaryAccount){
 			setStore(prev => ({ ...prev, primaryAccount }))
 		}
-	}, [web3])
+	}, [primaryAccount, store.primaryAccount])
 
 	useEffect(() => {
 		!store.hasFetchedCampaigns && getCampaigns()
@@ -43,8 +41,7 @@ export default function App({ Component, pageProps }) {
 				...prev, msgStatus: 'info', message: '', showMsg: false
 			}))
 		}, 10000) : undefined
-
-		store.primaryAccount === null && web3 && getPrimaryAccount()
+		updatePrimaryAccount()
 
 		return () => {
 			clearTimeout(removeMsg)
