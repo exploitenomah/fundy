@@ -16,6 +16,7 @@ export default function App({ Component, pageProps }) {
 		message: '',
 		showMsg: false,
 		msgStatus: 'info',
+		loading: true,
 		primaryAccount,
 	})
 
@@ -23,7 +24,7 @@ export default function App({ Component, pageProps }) {
 		if (campaignFactory) {
 			const campaigns = await campaignFactory.methods.getDeployedCampaigns().call()
 			setStore(prev => ({
-				...prev, campaigns, hasFetchedCampaigns: true
+				...prev, campaigns, hasFetchedCampaigns: true, loading: false
 			}))
 		}
 	}, [campaignFactory])
@@ -58,19 +59,21 @@ export default function App({ Component, pageProps }) {
 		)
 	} else {
 		return (
-			<Layout title={Component.title}>
-				<Notification 
-					hide={() => setStore(prev => ({...prev, showMsg: false}))}
-					message={store.message} 
-					show={store.showMsg} 
-					status={store.msgStatus} />
-				<Component
-					web3={web3}
-					store={store}
-					setStore={setStore}
-					factory={campaignFactory} 
-					{...pageProps} />
-			</Layout>
+			<div className='animate-fade-in'>
+				<Layout title={Component.title}>
+					<Notification 
+						hide={() => setStore(prev => ({...prev, showMsg: false}))}
+						message={store.message} 
+						show={store.showMsg} 
+						status={store.msgStatus} />
+					<Component
+						web3={web3}
+						store={store}
+						setStore={setStore}
+						factory={campaignFactory} 
+						{...pageProps} />
+				</Layout>
+			</div>
 		)
 	}
 }
