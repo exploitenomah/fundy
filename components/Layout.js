@@ -23,9 +23,9 @@ const Navigation = ({ showMobileNav, closeMobileNav }) => {
 				</li>)}
 			</ul>
 			<ul className={`${showMobileNav ? 'w-[80vw]' : 'w-0'} transition-all
-        duration-300 bg-gradient-to-bl from-purple-400 to-black  text-white
-        flex items-center justify-around z-[100] whitespace-nowrap shadow-white/30 shadow-lg
-        md:hidden fixed top-[2%] left-0 h-[100px] overflow-hidden`}>
+        duration-300 bg-gradient-to-bl from-purple-400 to-black  text-white min-h-72
+        flex items-center justify-around z-[100] whitespace-nowrap shadow-white/05 shadow-sm
+        md:hidden fixed top-0 left-0 overflow-hidden`}>
 				{listItems.map(item =>
 					<li key={item.name}>
 						<Link onClick={closeMobileNav} href={item.path}>
