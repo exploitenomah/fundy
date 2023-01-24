@@ -9,12 +9,12 @@ import DefaultLoader, { TextLoader } from '../../../components/Loader'
 import { ButtonBase } from '../../../components/Buttons'
 import Link from 'next/link'
 import { FaArrowLeft } from 'react-icons/fa'
-// import ContributionForm from '../../../components/ContributeModal'
+import useSummary from '../../../hooks/useSummary'
 // import { PrimaryBtn } from '../../../components/Buttons'
 
 
-const Request = ({ request, primaryAccount, manager }) => {
-	const { description, value, recipient, complete, approvalCount, contributorsCount } = request
+const Request = ({ request, primaryAccount, manager, contributorsCount, approveRequest }) => {
+	const { description, value, recipient, complete, approvalCount } = request
 	return (
 		<article className='bg-white/20 w-[80vw] max-w-[400px] flex flex-col gap-y-4 px-10 py-12 rounded-lg'>
 			<div>
@@ -39,9 +39,20 @@ const Request = ({ request, primaryAccount, manager }) => {
 					Request has been voted on and finalized.
 					</p> :
 					<>
-						<ButtonBase className='text-green-400 border border-current uppercase px-4 py-2 hover:scale-105 hover:shadow-2xl duration-300 transition-all'>Approve</ButtonBase>
-						{primaryAccount === manager && 
-						<ButtonBase className='text-blue-400 border border-current uppercase px-4 py-2 hover:scale-105 hover:shadow-2xl duration-300 transition-all'>Finalize</ButtonBase>}
+						<ButtonBase 
+							onClick={approveRequest} 
+							className='text-green-400 border border-current uppercase px-4 py-2 hover:scale-105 \n
+							 hover:shadow-2xl duration-300 transition-all'>
+								Approve
+						</ButtonBase>
+						{primaryAccount?.toLowerCase()  === manager?.toLowerCase() &&
+						<ButtonBase
+							className='text-blue-400 border border-current uppercase px-4 \n
+							py-2 hover:scale-105 hover:shadow-2xl duration-300 transition-all \n
+							disabled:cursor-not-allowed disabled:hover:scale-100 disabled:text-gray-50/30 '
+							disabled={approvalCount <= +contributorsCount / 2 }>
+								Finalize
+						</ButtonBase>}
 					</>
 				}
 			</div>
@@ -52,32 +63,30 @@ const Request = ({ request, primaryAccount, manager }) => {
 
 export default function Requests({ web3, setStore, store }) {
 	const router = useRouter()
-	const { address, count } = useMemo(() => router.query, [router.query])
+	const { address } = useMemo(() => router.query, [router.query])
 	const [hasFetchedContractData, setHasFetchedContractData] = useState(false)
+	const { contractSummary } = useSummary(web3)
 
 	const { contract } = useNewContract({ contractData: { abi: campaignJson.interface, address }, web3 })
 	const [contractRequests, setContractRequests] = useState([])
-	const [contractManager, setContractManager] = useState(null)
-	const [contractContributorsCount, setContractContribbutorsontributorsCount] = useState(0)
+	const [contractContributorsCount, setContractContributorsCount] = useState(0)
 	const [isLoading, setIsLoading] = useState(true)
 
 	const getContractData = useCallback(async () => {
 		let message, status, showMsg
-		if (contract.options.address) {
+		if (contract.options.address && typeof +contractSummary.requestsLength === 'number') {
 			try {
-				const requests = await Promise.all(Array(+count).fill()
-					.map((_el, idx) => idx)
-					.map(async (item) => contract.methods.requests(item).call()))
-				const manager = await contract.methods.manager().call()
 				const contributorsCount = await contract.methods.contributorsCount().call()
-				setContractContribbutorsontributorsCount(contributorsCount)
-				setContractManager(manager)
+				const requests = await Promise.allSettled(Array(+contractSummary.requestsLength).fill()
+					.map((_el, idx) => idx)
+					.map(async (item) => await contract.methods.requests(item).call()))
+				setContractContributorsCount(await contributorsCount)
 				setContractRequests(requests.map((req, idx) => ({
-					description: req[0],
-					value: web3.utils.fromWei(req[1], 'ether'),
-					recipient: req[2],
-					complete: req[3],
-					approvalCount: req[4],
+					description: req.value[0],
+					value: web3.utils.fromWei(req.value[1].toString(), 'ether'),
+					recipient: req.value[2],
+					complete: req.value[3],
+					approvalCount: req.value[4],
 					id: idx,
 				})))
 				setHasFetchedContractData(true)
@@ -97,7 +106,37 @@ export default function Requests({ web3, setStore, store }) {
 				setIsLoading(false)
 			}
 		}
-	}, [contract.methods, count, contract.options.address, setStore])
+	}, [contract.methods, contract.options.address, setStore, contractSummary.requestsLength])
+
+	const approveRequest = useCallback(async (id) => {
+		setIsLoading(true)
+		console.log('success')
+		let message, status, showMsg
+		try{
+			const success = await contract.methods.approveRequest(id.toString()).send({
+				from: store.primaryAccount,
+				gas: 3000000
+			})
+			console.log(success)
+			showMsg = true
+			message = 'Approved Successfully!'
+			status = 'success'
+			await getContractData()
+		}catch(err){
+			console.error(err)
+			status = 'error'
+			message = err.message
+			showMsg = true
+		}finally{
+			setStore(prev => ({
+				...prev,
+				message: message,
+				showMsg,
+				msgStatus: status
+			}))
+			setIsLoading(false)
+		}
+	}, [store.primaryAccount, contract.methods, getContractData])
 
 	useEffect(() => {
 		hasFetchedContractData === false && getContractData()
@@ -126,9 +165,10 @@ export default function Requests({ web3, setStore, store }) {
 					{contractRequests.map(request => 
 						(<li key={request.id}>
 							<Request 
+								approveRequest={() => approveRequest(request.id)}
 								request={request} 
 								primaryAccount={store.primaryAccount} 
-								manager={contractManager} 
+								manager={contractSummary.manager} 
 								contributorsCount={contractContributorsCount} />
 						</li>))}
 				</ul>

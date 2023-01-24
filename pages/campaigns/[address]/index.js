@@ -74,15 +74,15 @@ export default function Campaign({ web3, setStore, store }) {
 							title={`${contractSummary.requestsLength} Spending Requests`}
 							info={'Spending requests are requests made by the manager of the contract to withdraw funds.'}>
 							<div className='flex flex-wrap gap-x-6'>
-								{contractSummary.requestsLength > 0 ? <SecondaryBtn 
-									onClick={() => router.push(`/campaigns/${address}/requests?count=${contractSummary.requestsLength}`)}
+								{+contractSummary.requestsLength > 0 ? <SecondaryBtn 
+									onClick={() => router.push(`/campaigns/${address}/requests`)}
 									className='px-4 text-sm mb-2 mt-3 text-purple-200 border border-current py-2'>
 									View Requests
 								</SecondaryBtn> :
 									<TypographyBase className='text-white/80' as='small'>No spending requests have been created</TypographyBase>}
 								{
-									store.primaryAccount === contractSummary.manager &&
-									<SecondaryBtn  onClick={() => setShowCreateRequestForm(true)}  className='px-4 text-sm mb-2 mt-3 text-green-200 border border-current py-2'>Create Request </SecondaryBtn>
+									isManager &&
+									<SecondaryBtn  onClick={() => setShowCreateRequestForm(true)} className='px-4 text-sm mb-2 mt-3 text-green-200 border border-current py-2'>Create Request </SecondaryBtn>
 								}
 							</div>
 						</InfoCard>
