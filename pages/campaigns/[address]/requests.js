@@ -13,7 +13,7 @@ import useSummary from '../../../hooks/useSummary'
 // import { PrimaryBtn } from '../../../components/Buttons'
 
 
-const Request = ({ request, primaryAccount, manager, contributorsCount, approveRequest }) => {
+const Request = ({ request, primaryAccount, manager, contributorsCount, approveRequest, finalizeRequest }) => {
 	const { description, value, recipient, complete, approvalCount } = request
 	return (
 		<article className='bg-white/20 w-[80vw] max-w-[400px] flex flex-col gap-y-4 px-10 py-12 rounded-lg'>
@@ -47,6 +47,7 @@ const Request = ({ request, primaryAccount, manager, contributorsCount, approveR
 						</ButtonBase>
 						{primaryAccount?.toLowerCase()  === manager?.toLowerCase() &&
 						<ButtonBase
+							onClick={finalizeRequest}
 							className='text-blue-400 border border-current uppercase px-4 \n
 							py-2 hover:scale-105 hover:shadow-2xl duration-300 transition-all \n
 							disabled:cursor-not-allowed disabled:hover:scale-100 disabled:text-gray-50/30 '
@@ -138,6 +139,35 @@ export default function Requests({ web3, setStore, store }) {
 		}
 	}, [store.primaryAccount, contract.methods, getContractData])
 
+	const finalizeRequest = useCallback(async (id) => {
+		setIsLoading(true)
+		console.log('finalizeRequest')
+		let message, status, showMsg
+		try{
+			const success = await contract.methods.finalizeRequest(id.toString()).send({
+				from: store.primaryAccount,
+				gas: 3000000
+			})
+			console.log(success)
+			showMsg = true
+			message = 'Finalized Successfully!'
+			status = 'success'
+			await getContractData()
+		}catch(err){
+			console.error(err)
+			status = 'error'
+			message = err.message
+			showMsg = true
+		}finally{
+			setStore(prev => ({
+				...prev,
+				message: message,
+				showMsg,
+				msgStatus: status
+			}))
+			setIsLoading(false)
+		}
+	}, [contract.methods])
 	useEffect(() => {
 		hasFetchedContractData === false && getContractData()
 	}, [getContractData, hasFetchedContractData])
@@ -146,7 +176,7 @@ export default function Requests({ web3, setStore, store }) {
 		return (
 			<main className='flex flex-col gap-y-4 justify-center items-center h-[75vh]'>
 				<DefaultLoader />
-				<TextLoader text='Loading Requests'/>
+				<TextLoader text='Loading'/>
 			</main>
 		)
 	}
@@ -166,6 +196,7 @@ export default function Requests({ web3, setStore, store }) {
 						(<li key={request.id}>
 							<Request 
 								approveRequest={() => approveRequest(request.id)}
+								finalizeRequest={() => finalizeRequest(request.id)}
 								request={request} 
 								primaryAccount={store.primaryAccount} 
 								manager={contractSummary.manager} 
