@@ -29,7 +29,7 @@ export default function CreateRequestForm({
 			const reqBody = {
 				...request, value: web3.utils.toWei(request.value, 'ether')
 			}
-			const newReq = await campaign.methods.createRequest(
+			await campaign.methods.createRequest(
 				reqBody.description,
 				reqBody.value,
 				reqBody.recipient
@@ -37,7 +37,6 @@ export default function CreateRequestForm({
 				from: primaryAccount,
 				gas: 3000000,
 			})
-			console.log(newReq)
 			status = 'success'
 			message = 'Successfully created request!'
 		}catch(err){
