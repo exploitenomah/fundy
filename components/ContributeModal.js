@@ -24,12 +24,11 @@ export default function ContributionForm({
 		let status, message
 		try{
 			setIsLoading(true)
-			const contributed = await campaign.methods.contribute().send({
+			await campaign.methods.contribute().send({
 				from: primaryAccount,
 				gas: 3000000,
 				value: web3.utils.toWei(contribution, 'ether')
 			})
-			console.log(contributed)
 			status = 'success'
 			message = 'Successfully contributed. You are now an approver of this campaign!'
 		}catch(err){

@@ -7,7 +7,7 @@ import Layout from '../components/Layout'
 import Notification from '../components/Notificaton'
 
 export default function App({ Component, pageProps }) {
-	const web3 = useWeb3()
+	const { web3, primaryAccount } = useWeb3()
 	const { campaignFactory } = useCampaignFactory(web3)
 
 	const [store, setStore] = useState({
@@ -16,25 +16,18 @@ export default function App({ Component, pageProps }) {
 		message: '',
 		showMsg: false,
 		msgStatus: 'info',
-		primaryAccount: null
+		loading: true,
+		primaryAccount,
 	})
 
 	const getCampaigns = useCallback(async () => {
 		if (campaignFactory) {
 			const campaigns = await campaignFactory.methods.getDeployedCampaigns().call()
 			setStore(prev => ({
-				...prev, campaigns, hasFetchedCampaigns: true
+				...prev, campaigns, hasFetchedCampaigns: true, loading: false
 			}))
 		}
 	}, [campaignFactory])
-
-	const getPrimaryAccount = useCallback(async () => {
-		if(web3){
-			const accounts = await web3.eth.getAccounts()
-			const [primaryAccount] = accounts
-			setStore(prev => ({ ...prev, primaryAccount }))
-		}
-	}, [web3])
 
 	useEffect(() => {
 		!store.hasFetchedCampaigns && getCampaigns()
@@ -43,9 +36,7 @@ export default function App({ Component, pageProps }) {
 				...prev, msgStatus: 'info', message: '', showMsg: false
 			}))
 		}, 10000) : undefined
-
-		store.primaryAccount === null && web3 && getPrimaryAccount()
-
+		
 		return () => {
 			clearTimeout(removeMsg)
 		}
@@ -61,19 +52,21 @@ export default function App({ Component, pageProps }) {
 		)
 	} else {
 		return (
-			<Layout title={Component.title}>
-				<Notification 
-					hide={() => setStore(prev => ({...prev, showMsg: false}))}
-					message={store.message} 
-					show={store.showMsg} 
-					status={store.msgStatus} />
-				<Component
-					web3={web3}
-					store={store}
-					setStore={setStore}
-					factory={campaignFactory} 
-					{...pageProps} />
-			</Layout>
+			<>
+				<Layout title={Component.title}>
+					<Notification 
+						hide={() => setStore(prev => ({...prev, showMsg: false}))}
+						message={store.message} 
+						show={store.showMsg} 
+						status={store.msgStatus} />
+					<Component
+						web3={web3}
+						store={{...store, primaryAccount}}
+						setStore={setStore}
+						factory={campaignFactory} 
+						{...pageProps} />
+				</Layout>
+			</>
 		)
 	}
 }

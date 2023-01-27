@@ -69,7 +69,7 @@ export default function NewCampaign({ setStore, factory, web3 }) {
 	}
 
 	return (
-		<div className='flex justify-center items-center min-h-[80vh]'>
+		<div className='flex justify-center items-center min-h-[80vh] animate-fade-in'>
 			<main className='rounded-lg w-[85vw] max-w-md border border-white/10 mx-auto py-8 text-left bg-gradient-to-bl \n
      from-purple-300/10 to-black/25 backdrop-blur-xl my-2'>
 				<H1 className='text-center'>Get Started.</H1>

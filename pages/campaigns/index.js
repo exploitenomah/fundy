@@ -2,12 +2,25 @@
 import Link from 'next/link'
 import { SecondaryBtn, PrimaryBtn } from '../../components/Buttons'
 import { H1 } from '../../components/Headings'
+import DefaultLoader, { TextLoader } from '../../components/Loader'
 import TypographyBase from '../../components/Typography'
 
 export default function Campaigns({ store }) {
 
+
+	if(store.loading){
+		return (
+			<main className='flex items-center justify-center h-[75vh]'>
+				<div>
+					<DefaultLoader />
+					<TextLoader text='getting campaigns...' />
+				</div>
+			</main>
+		)
+	}
+
 	return (
-		<div className='max-w-[85vw] mx-auto'>
+		<div className='max-w-[85vw] mx-auto animate-fade-in'>
 			<main className='py-16'>
 				<H1>Open Campaigns</H1>
 				<TypographyBase className='text-white/80'>
