@@ -75,7 +75,7 @@ export default function Requests({ web3, setStore, store }) {
 
 	const getContractData = useCallback(async () => {
 		let message, status, showMsg
-		if (contract.options.address && typeof +contractSummary.requestsLength === 'number') {
+		if (contract.options.address && contractSummary.requestsLength !== null) {
 			try {
 				const contributorsCount = await contract.methods.contributorsCount().call()
 				const requests = await Promise.allSettled(Array(+contractSummary.requestsLength).fill()
@@ -90,7 +90,10 @@ export default function Requests({ web3, setStore, store }) {
 					approvalCount: req.value[4],
 					id: idx,
 				})))
-				setHasFetchedContractData(true)
+				setHasFetchedContractData(
+					contractSummary.requestsLength !== null && 
+					+contractSummary.requestsLength === requests.length
+				)
 				showMsg = false
 			} catch (err) {
 				console.error(err)
@@ -111,14 +114,12 @@ export default function Requests({ web3, setStore, store }) {
 
 	const approveRequest = useCallback(async (id) => {
 		setIsLoading(true)
-		console.log('success')
 		let message, status, showMsg
 		try{
-			const success = await contract.methods.approveRequest(id.toString()).send({
+			await contract.methods.approveRequest(id.toString()).send({
 				from: store.primaryAccount,
 				gas: 3000000
 			})
-			console.log(success)
 			showMsg = true
 			message = 'Approved Successfully!'
 			status = 'success'
@@ -141,14 +142,12 @@ export default function Requests({ web3, setStore, store }) {
 
 	const finalizeRequest = useCallback(async (id) => {
 		setIsLoading(true)
-		console.log('finalizeRequest')
 		let message, status, showMsg
 		try{
-			const success = await contract.methods.finalizeRequest(id.toString()).send({
+			await contract.methods.finalizeRequest(id.toString()).send({
 				from: store.primaryAccount,
-				gas: 3000000
+				gas: '4000000'
 			})
-			console.log(success)
 			showMsg = true
 			message = 'Finalized Successfully!'
 			status = 'success'
@@ -168,6 +167,7 @@ export default function Requests({ web3, setStore, store }) {
 			setIsLoading(false)
 		}
 	}, [contract.methods])
+
 	useEffect(() => {
 		hasFetchedContractData === false && getContractData()
 	}, [getContractData, hasFetchedContractData])
