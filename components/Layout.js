@@ -70,7 +70,7 @@ export default function Layout ({ children, title }) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<div>
-				<header className={`sticky ${isScrolling ? 'bg-black/80' : 'bg-black/50'} top-0 left-0 \n
+				<header className={`sticky ${isScrolling ? 'bg-black/30 backdrop-blur-[3px]' : 'bg-black/50'} top-0 left-0 \n
          right-0 w-full transition-all z-[90]`}>
 					<div className='w-[85vw] py-5 flex justify-between items-center mx-auto '>
 						<div className={`${dancing_script.className} text-5xl text-white capitalize`}>
