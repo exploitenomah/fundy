@@ -63,7 +63,8 @@ export default function App({ Component, pageProps }) {
 						web3={web3}
 						store={{...store, primaryAccount}}
 						setStore={setStore}
-						factory={campaignFactory} 
+						factory={campaignFactory}
+						getCampaigns={getCampaigns} 
 						{...pageProps} />
 				</Layout>
 			</>
