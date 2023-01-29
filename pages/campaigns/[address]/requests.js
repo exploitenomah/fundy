@@ -214,19 +214,19 @@ export default function Requests({ web3, setStore, store, runOnAccountsChange })
 				<Link href={`/campaigns/${address}`}>
 					<ButtonBase className='flex gap-x-3 items-center my-4'><FaArrowLeft /> Back To Overview</ButtonBase>
 				</Link>
-				<div className='my-8 flex items-center justify-start flex-wrap gap-y-8 gap-x-32 lg:justify-between'>
+				<div className='my-8 flex items-start justify-between flex-col gap-y-8 gap-x-32 lg:justify-between'>
 					<H2 as='h1' className='text-md'>
-						Requests for campaign deployed at <span className='text-white/60 max-w-[400px] md:text-[1.6rem] overflow-hidden text-ellipsis text-md block'>{address}</span>
+						Requests for campaign deployed at <span className='text-white/60 w-[80vw] max-w-[400px] md:text-[1.6rem] overflow-hidden text-ellipsis text-md inline-block'>{address}</span>
 					</H2>
 					{!primaryAccIsContributor &&
-						<>
+						<div className='flex gap-x-6 items-center'>
 							<TypographyBase className='text-white/60 text-sm' as='small'>
 								You need to be a contributor to this campaign in order to approve requests.
 							</TypographyBase>
 							<Link href={`/campaigns/${address}?contribute=true`}>
 								<PrimaryBtn className='text-purple-200' as='span'>Contribute</PrimaryBtn>
 							</Link>
-						</>}
+						</div>}
 				</div>
 				<ul className='flex flex-wrap gap-8'>
 					{contractRequests.map(request => 

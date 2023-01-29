@@ -104,8 +104,10 @@ export default function Campaign({ web3, setStore, store, runOnAccountsChange })
 							details={'Current amount of contributors'}
 							title={contractSummary.totalContributors}
 							info={'The number of people who have contributed to this campaign.'} >
-							{primaryAccIsContributor &&
-								<TypographyBase className='text-white/80' as='small'>You are a contributor</TypographyBase>}
+							{primaryAccIsContributor ?
+								<TypographyBase className='text-white/80' as='small'>You are a contributor</TypographyBase> :
+								<TypographyBase className='text-white/60 text-sm' as='small'>You are not a contributor</TypographyBase>
+							}
 						</InfoCard>
 					</div>
 				</div>
