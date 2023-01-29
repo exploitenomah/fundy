@@ -3,6 +3,7 @@ import { FaChevronCircleDown } from 'react-icons/fa'
 import { H1 } from '../components/Headings'
 import TypographyBase from '../components/Typography'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 export default function Home() {
 
 
@@ -53,7 +54,8 @@ export default function Home() {
 				</TypographyBase>
 				<TypographyBase className='text-slate-100'>Get started now!</TypographyBase>
 				<TypographyBase className='text-white/100'>
-            Create a&nbsp;&nbsp;&nbsp;<Link href='/campaigns/new'><PrimaryBtn as='span' className='text-purple-200'>new campaign</PrimaryBtn></Link>
+					Create a&nbsp;&nbsp;&nbsp;
+					<PrimaryBtn onClick={() => useRouter().push('/campaigns/new')} className='text-purple-200'>new campaign</PrimaryBtn>
 				</TypographyBase>
 			</section>
 		</div>
