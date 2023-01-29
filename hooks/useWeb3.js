@@ -33,7 +33,7 @@ const useWeb3 = ({ runOnAccountsChange }) => {
 			setEthereum(provider)
 		}
 	}, [ethereum, init])
-	console.log(ethereum, web3)
+
 	return { web3, primaryAccount, isLoadingWeb3 }
 }
 
