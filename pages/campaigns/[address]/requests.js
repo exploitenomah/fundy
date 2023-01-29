@@ -6,7 +6,7 @@ import useNewContract from '../../../hooks/useNewContract'
 import TypographyBase from '../../../components/Typography'
 import { H2, H3, H4, H5 } from '../../../components/Headings'
 import DefaultLoader, { TextLoader } from '../../../components/Loader'
-import { ButtonBase } from '../../../components/Buttons'
+import { ButtonBase, PrimaryBtn } from '../../../components/Buttons'
 import Link from 'next/link'
 import { FaArrowLeft } from 'react-icons/fa'
 import useSummary from '../../../hooks/useSummary'
@@ -207,6 +207,15 @@ export default function Requests({ web3, setStore, store }) {
 					<H2 as='h1' className='text-md'>
 						Requests for campaign deployed at <span className='text-white/60 max-w-[400px] md:text-[1.6rem] overflow-hidden text-ellipsis text-md block'>{address}</span>
 					</H2>
+					{!primaryAccIsContributor &&
+						<>
+							<TypographyBase className='text-white/60 text-sm' as='small'>
+								You need to be a contributor to this campaign in order to approve requests.
+							</TypographyBase>
+							<Link href={`/campaigns/${address}?contribute=true`}>
+								<PrimaryBtn className='text-purple-200' as='span'>Contribute</PrimaryBtn>
+							</Link>
+						</>}
 				</div>
 				<ul className='flex flex-wrap gap-8'>
 					{contractRequests.map(request => 

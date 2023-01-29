@@ -30,7 +30,7 @@ export default function Campaign({ web3, setStore, store }) {
 	const router = useRouter()
 	const address = useMemo(() => router.query.address, [router.query])
 	const { contract } = useNewContract({ contractData: { abi: campaignJson.interface, address }, web3 })
-	const [showContributionForm, setShowContributionForm] = useState(false)
+	const [showContributionForm, setShowContributionForm] = useState(Boolean(router.query.contribute))
 	const [showCreateRequestForm, setShowCreateRequestForm] = useState(false)
 	const { contractSummary, getContractSummary } = useSummary(web3)
 	const isManager = useMemo(() =>
@@ -99,6 +99,7 @@ export default function Campaign({ web3, setStore, store }) {
 				close={() => {
 					setShowContributionForm(false)
 					getContractSummary()
+					router.replace(`/campaigns/${address}`)
 				}}
 				campaign={contract}
 				setStore={setStore}
