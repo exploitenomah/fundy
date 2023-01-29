@@ -7,7 +7,10 @@ import Layout from '../components/Layout'
 import Notification from '../components/Notificaton'
 
 export default function App({ Component, pageProps }) {
-	const { web3, primaryAccount } = useWeb3()
+	const runOnAccountsChange = useCallback(async (asyncFunc) => {
+		typeof asyncFunc === 'function' && asyncFunc()
+	}, [])
+	const { web3, primaryAccount } = useWeb3({ runOnAccountsChange })
 	const { campaignFactory } = useCampaignFactory(web3)
 
 	const [store, setStore] = useState({
@@ -64,7 +67,8 @@ export default function App({ Component, pageProps }) {
 						store={{...store, primaryAccount}}
 						setStore={setStore}
 						factory={campaignFactory}
-						getCampaigns={getCampaigns} 
+						getCampaigns={getCampaigns}
+						runOnAccountsChange={runOnAccountsChange} 
 						{...pageProps} />
 				</Layout>
 			</>

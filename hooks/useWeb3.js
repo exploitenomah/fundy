@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import Web3 from 'web3'
 
 
-const useWeb3 = () => {
+const useWeb3 = ({ runOnAccountsChange }) => {
 	const [ethereum, setEthereum] = useState(null)
 	const [primaryAccount, setPrimaryAccount] = useState('')
 	const web3 = useMemo(() => {
@@ -15,6 +15,7 @@ const useWeb3 = () => {
 		setPrimaryAccount(accounts[0])
 		window.ethereum.on('accountsChanged', function (accounts) {
 			setPrimaryAccount(accounts[0])
+			return typeof runOnAccountsChange === 'function' && runOnAccountsChange()
 		})
 	}, [])
 

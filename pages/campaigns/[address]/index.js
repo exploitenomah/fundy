@@ -1,7 +1,7 @@
 
 import campaignJson from '../../../ethereum/contractBuilds/Campaign.json'
 import { useRouter } from 'next/router'
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import useNewContract from '../../../hooks/useNewContract'
 import TypographyBase from '../../../components/Typography'
 import { H2, H3 } from '../../../components/Headings'
@@ -25,18 +25,31 @@ const InfoCard = ({ title, details, info, children }) => {
 	)
 }
 
-export default function Campaign({ web3, setStore, store }) {
+export default function Campaign({ web3, setStore, store, runOnAccountsChange }) {
 
 	const router = useRouter()
 	const address = useMemo(() => router.query.address, [router.query])
 	const { contract } = useNewContract({ contractData: { abi: campaignJson.interface, address }, web3 })
 	const [showContributionForm, setShowContributionForm] = useState(Boolean(router.query.contribute))
 	const [showCreateRequestForm, setShowCreateRequestForm] = useState(false)
+	const [primaryAccIsContributor, setPrimaryAccIsContributor] = useState(null)
 	const { contractSummary, getContractSummary } = useSummary(web3)
 	const isManager = useMemo(() =>
 		store.primaryAccount?.toLowerCase() === contractSummary.manager?.toLowerCase(), 
 	[store.primaryAccount, contractSummary?.manager])
+
+	const checkIsContributor = useCallback(async () => {
+		if(contract.options.address){
+			const isContributor = await contract.methods.contributors(store.primaryAccount).call()
+			setPrimaryAccIsContributor(isContributor)
+		}
+	}, [contract.methods?.contribute, store.primaryAccount, contract.options?.address])
 	
+	useEffect(() => {		
+		runOnAccountsChange(checkIsContributor)
+		typeof primaryAccIsContributor !== 'boolean' && checkIsContributor()
+	}, [runOnAccountsChange, checkIsContributor])
+
 	return (
 		<>
 			<main className='my-12 max-w-[85vw] mx-auto animate-fade-in'>
@@ -45,7 +58,8 @@ export default function Campaign({ web3, setStore, store }) {
 						<H2 as='h1' className='text-md'>
 							Campaign deployed at <span className='text-white/60 max-w-[400px] md:text-[1.6rem] overflow-hidden text-ellipsis text-md block'>{address}</span>
 						</H2>
-						{!isManager && <PrimaryBtn onClick={() => setShowContributionForm(true)} className='text-purple-300'>Contribute</PrimaryBtn>}
+						{!isManager && primaryAccIsContributor === false &&
+						<PrimaryBtn onClick={() => setShowContributionForm(true)} className='text-purple-300'>Contribute</PrimaryBtn>}
 					</div>
 					<div className='my-8 flex justify-start flex-wrap gap-y-8 gap-x-8'>
 						<InfoCard
@@ -89,7 +103,10 @@ export default function Campaign({ web3, setStore, store }) {
 						<InfoCard
 							details={'Current amount of contributors'}
 							title={contractSummary.totalContributors}
-							info={'The number of people who have contributed to this campaign.'} />
+							info={'The number of people who have contributed to this campaign.'} >
+							{primaryAccIsContributor &&
+								<TypographyBase className='text-white/80' as='small'>You are a contributor</TypographyBase>}
+						</InfoCard>
 					</div>
 				</div>
 			</main>

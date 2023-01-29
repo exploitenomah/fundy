@@ -76,7 +76,7 @@ const Request = ({
 }
 
 
-export default function Requests({ web3, setStore, store }) {
+export default function Requests({ web3, setStore, store, runOnAccountsChange }) {
 	const router = useRouter()
 	const { address } = useMemo(() => router.query, [router.query])
 	const [hasFetchedContractData, setHasFetchedContractData] = useState(false)
@@ -87,6 +87,17 @@ export default function Requests({ web3, setStore, store }) {
 	const [contractContributorsCount, setContractContributorsCount] = useState(0)
 	const [isLoading, setIsLoading] = useState(true)
 	const [primaryAccIsContributor, setPrimaryAccIsContributor] = useState(false)
+
+	const checkIsContributor = useCallback(async () => {
+		if(contract.options.address){
+			const isContributor = await contract.methods.contributors(store.primaryAccount).call()
+			setPrimaryAccIsContributor(isContributor)
+		}
+	}, [contract.methods?.contribute, store.primaryAccount, contract.options?.address])
+	
+	useEffect(() => {		
+		runOnAccountsChange(checkIsContributor)
+	}, [runOnAccountsChange, checkIsContributor])
 
 	const getContractData = useCallback(async () => {
 		let message, status, showMsg
