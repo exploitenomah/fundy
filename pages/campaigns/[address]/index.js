@@ -106,6 +106,7 @@ export default function Campaign({ web3, setStore, store, runOnAccountsChange })
 							info={'The number of people who have contributed to this campaign.'} >
 							{primaryAccIsContributor ?
 								<TypographyBase className='text-white/80' as='small'>You are a contributor</TypographyBase> :
+								!isManager &&
 								<TypographyBase className='text-white/60 text-sm' as='small'>You are not a contributor</TypographyBase>
 							}
 						</InfoCard>

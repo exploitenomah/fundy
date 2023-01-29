@@ -36,7 +36,7 @@ export default function Campaigns({ store }) {
 					</Link>
 				</div>}
 				<ul className='my-8 flex justify-start items-start gap-x-8 gap-y-6 flex-wrap'>
-					{store.campaigns.map(campaign => (
+					{[...store.campaigns].reverse().map(campaign => (
 						<li 
 							className='flex flex-col gap-y-6 border bg-white/10 px-6 py-6'
 							key={campaign}>
