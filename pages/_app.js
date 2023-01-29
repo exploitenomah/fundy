@@ -5,9 +5,17 @@ import DefaultLoader, { TextLoader } from '../components/Loader'
 import { useCallback, useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import Notification from '../components/Notificaton'
+import TypographyBase from '../components/Typography'
+import { Dancing_Script } from '@next/font/google'
+import { H1 } from '../components/Headings'
+
+const dancing_script = Dancing_Script({ subsets: ['latin'] })
 
 export default function App({ Component, pageProps }) {
-	const { web3, primaryAccount } = useWeb3()
+	const runOnAccountsChange = useCallback(async (asyncFunc) => {
+		typeof asyncFunc === 'function' && asyncFunc()
+	}, [])
+	const { web3, primaryAccount, isLoadingWeb3 } = useWeb3({ runOnAccountsChange })
 	const { campaignFactory } = useCampaignFactory(web3)
 
 	const [store, setStore] = useState({
@@ -42,7 +50,21 @@ export default function App({ Component, pageProps }) {
 		}
 	}, [store.showMsg, store.hasFetchedCampaigns, store.primaryAccount, web3, getCampaigns])
 
-	if (campaignFactory === null && web3 === undefined) {
+	if(isLoadingWeb3 === false && web3 === undefined){
+		return (
+			<main className='h-screen w-screen flex flex-col justify-center items-center'>
+				<H1 className={`${dancing_script.className} text-8xl text-white capitalize`}>
+					Fundy
+				</H1>
+				<TypographyBase className='text-white'>
+					Please install 
+					<a className='text-white inline-block px-3 underline-offset-2' href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn'>MetaMask</a> 
+					to use this app.
+				</TypographyBase>
+			</main>
+		)	}
+
+	if (campaignFactory === null && isLoadingWeb3) {
 		return (
 			<div className='h-screen w-screen flex flex-col justify-center items-center'>
 				<DefaultLoader>
@@ -63,7 +85,9 @@ export default function App({ Component, pageProps }) {
 						web3={web3}
 						store={{...store, primaryAccount}}
 						setStore={setStore}
-						factory={campaignFactory} 
+						factory={campaignFactory}
+						getCampaigns={getCampaigns}
+						runOnAccountsChange={runOnAccountsChange} 
 						{...pageProps} />
 				</Layout>
 			</>

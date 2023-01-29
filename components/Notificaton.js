@@ -19,6 +19,9 @@ export default function Notification({ show, message, status, hide}) {
 			<span className='whitespace-nowrap text-ellipsis overflow-hidden block'>{message}</span>
 			<ButtonBase 
 				onClick={hide}
+				value='close notification'
+				name='close notification'
+				aria-label='close notification'
 				className='absolute flex justify-center items-center rounded-full right-[-12px] top-[-12px] \n
         w-8 h-8 bg-white text-black'><FaTimes /></ButtonBase>
 		</div>

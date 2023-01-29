@@ -36,15 +36,15 @@ export default function Campaigns({ store }) {
 					</Link>
 				</div>}
 				<ul className='my-8 flex justify-start items-start gap-x-8 gap-y-6 flex-wrap'>
-					{store.campaigns.map(campaign => (
+					{[...store.campaigns].reverse().map(campaign => (
 						<li 
-							className='flex flex-col border bg-white/10 px-6 py-4'
+							className='flex flex-col gap-y-6 border bg-white/10 px-6 py-6'
 							key={campaign}>
 							<span className='inline-block'>Campaign at </span>
 							<span 
 								title={campaign}
 								className='inline-block p-0 m-0 w-[250px] overflow-hidden text-ellipsis'>{campaign}</span>
-							<Link className='my-8 w-fit inline-block' passHref href={`/campaigns/${campaign}`}>
+							<Link className='w-fit inline-block' passHref href={`/campaigns/${campaign}`}>
 								<SecondaryBtn className='text-purple-300 px-2 py-2 border border-current hover:border-transparent' as='span'>View Campaign</SecondaryBtn>
 							</Link>
 						</li>

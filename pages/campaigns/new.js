@@ -5,7 +5,7 @@ import { useState, useCallback } from 'react'
 import DefaultLoader, { TextLoader } from '../../components/Loader'
 import { useRouter } from 'next/router'
 
-export default function NewCampaign({ setStore, factory, web3 }) {
+export default function NewCampaign({ setStore, factory, web3, getCampaigns }) {
 	const router = useRouter()
 	const [newCampaign, setNewCampaign] = useState({
 		minContribution: 0,
@@ -40,6 +40,7 @@ export default function NewCampaign({ setStore, factory, web3 }) {
 			status = 'success'
 			message = 'Successfully created campaign!'
 			setNewCampaign({description: '', minContribution: 0})
+			await getCampaigns()
 			setTimeout(() => {
 				router.push('/campaigns')
 			}, 1500)
@@ -56,7 +57,7 @@ export default function NewCampaign({ setStore, factory, web3 }) {
 				msgStatus: status
 			}))
 		}
-	}, [newCampaign])
+	}, [newCampaign, getCampaigns])
 
 	if (isLoading) {
 		return (
