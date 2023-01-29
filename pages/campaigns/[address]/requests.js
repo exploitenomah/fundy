@@ -3,15 +3,13 @@ import campaignJson from '../../../ethereum/contractBuilds/Campaign.json'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import useNewContract from '../../../hooks/useNewContract'
-// import TypographyBase from '../../../components/Typography'
+import TypographyBase from '../../../components/Typography'
 import { H2, H3, H4, H5 } from '../../../components/Headings'
 import DefaultLoader, { TextLoader } from '../../../components/Loader'
 import { ButtonBase } from '../../../components/Buttons'
 import Link from 'next/link'
 import { FaArrowLeft } from 'react-icons/fa'
 import useSummary from '../../../hooks/useSummary'
-// import { PrimaryBtn } from '../../../components/Buttons'
-
 
 const Request = ({ 
 	request, primaryAccount, manager, 
@@ -19,6 +17,7 @@ const Request = ({
 	primaryAccIsContributor, finalizeRequest }) => {
 
 	const { description, value, recipient, complete, approvalCount } = request
+	const isManager = useMemo(() => primaryAccount?.toLowerCase()  === manager?.toLowerCase(), [primaryAccount, manager])
 
 	return (
 		<article className='bg-white/20 w-[80vw] max-w-[400px] flex flex-col gap-y-4 px-10 py-12 rounded-lg'>
@@ -45,23 +44,30 @@ const Request = ({
 					</p> :
 					<>
 						{
-							primaryAccIsContributor &&
-							<ButtonBase 
-								onClick={approveRequest} 
-								className='text-green-400 border border-current uppercase px-4 py-2 hover:scale-105 \n
+							primaryAccIsContributor ?
+								<ButtonBase 
+									onClick={approveRequest} 
+									className='text-green-400 border border-current uppercase px-4 py-2 hover:scale-105 \n
 								hover:shadow-2xl duration-300 transition-all'>
 									Approve
-							</ButtonBase>
+								</ButtonBase> :
+								!isManager &&
+								<TypographyBase className='text-white/60 text-sm' as='small'>
+									You need to be a contributor to this campaign in order to approve requests.
+								</TypographyBase>
 						}
-						{primaryAccount?.toLowerCase()  === manager?.toLowerCase() &&
-						<ButtonBase
-							onClick={finalizeRequest}
-							className='text-blue-400 border border-current uppercase px-4 \n
-							py-2 hover:scale-105 hover:shadow-2xl duration-300 transition-all \n
-							disabled:cursor-not-allowed disabled:hover:scale-100 disabled:text-gray-50/30 '
-							disabled={approvalCount <= +contributorsCount / 2 }>
-								Finalize
-						</ButtonBase>}
+						{
+							isManager &&
+								<ButtonBase
+									onClick={finalizeRequest}
+									className='text-blue-400 border border-current uppercase px-4 \n
+									py-2 hover:scale-105 hover:shadow-2xl duration-300 transition-all \n
+									disabled:cursor-not-allowed disabled:hover:scale-100 disabled:text-gray-50/30 '
+									disabled={approvalCount <= +contributorsCount / 2}
+									title={(approvalCount <= +contributorsCount / 2) ? 'Approval votes are less than the total number of contributors' : ''}>
+										Finalize
+								</ButtonBase>
+						}
 					</>
 				}
 			</div>
