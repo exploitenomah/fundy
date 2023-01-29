@@ -13,8 +13,13 @@ import useSummary from '../../../hooks/useSummary'
 // import { PrimaryBtn } from '../../../components/Buttons'
 
 
-const Request = ({ request, primaryAccount, manager, contributorsCount, approveRequest, finalizeRequest }) => {
+const Request = ({ 
+	request, primaryAccount, manager, 
+	contributorsCount, approveRequest,
+	primaryAccIsContributor, finalizeRequest }) => {
+
 	const { description, value, recipient, complete, approvalCount } = request
+
 	return (
 		<article className='bg-white/20 w-[80vw] max-w-[400px] flex flex-col gap-y-4 px-10 py-12 rounded-lg'>
 			<div>
@@ -39,12 +44,15 @@ const Request = ({ request, primaryAccount, manager, contributorsCount, approveR
 					Request has been voted on and finalized.
 					</p> :
 					<>
-						<ButtonBase 
-							onClick={approveRequest} 
-							className='text-green-400 border border-current uppercase px-4 py-2 hover:scale-105 \n
-							 hover:shadow-2xl duration-300 transition-all'>
-								Approve
-						</ButtonBase>
+						{
+							primaryAccIsContributor &&
+							<ButtonBase 
+								onClick={approveRequest} 
+								className='text-green-400 border border-current uppercase px-4 py-2 hover:scale-105 \n
+								hover:shadow-2xl duration-300 transition-all'>
+									Approve
+							</ButtonBase>
+						}
 						{primaryAccount?.toLowerCase()  === manager?.toLowerCase() &&
 						<ButtonBase
 							onClick={finalizeRequest}
@@ -72,12 +80,15 @@ export default function Requests({ web3, setStore, store }) {
 	const [contractRequests, setContractRequests] = useState([])
 	const [contractContributorsCount, setContractContributorsCount] = useState(0)
 	const [isLoading, setIsLoading] = useState(true)
+	const [primaryAccIsContributor, setPrimaryAccIsContributor] = useState(false)
 
 	const getContractData = useCallback(async () => {
 		let message, status, showMsg
 		if (contract.options.address && contractSummary.requestsLength !== null) {
 			try {
 				const contributorsCount = await contract.methods.contributorsCount().call()
+				const isContributor = await contract.methods.contributors(store.primaryAccount).call()
+				setPrimaryAccIsContributor(isContributor)
 				const requests = await Promise.allSettled(Array(+contractSummary.requestsLength).fill()
 					.map((_el, idx) => idx)
 					.map(async (item) => await contract.methods.requests(item).call()))
@@ -110,7 +121,7 @@ export default function Requests({ web3, setStore, store }) {
 				setIsLoading(false)
 			}
 		}
-	}, [contract.methods, contract.options.address, setStore, contractSummary.requestsLength])
+	}, [contract.methods, contract.options.address, setStore, contractSummary.requestsLength, store.primaryAccount])
 
 	const approveRequest = useCallback(async (id) => {
 		setIsLoading(true)
@@ -195,6 +206,7 @@ export default function Requests({ web3, setStore, store }) {
 					{contractRequests.map(request => 
 						(<li key={request.id}>
 							<Request 
+								primaryAccIsContributor={primaryAccIsContributor}
 								approveRequest={() => approveRequest(request.id)}
 								finalizeRequest={() => finalizeRequest(request.id)}
 								request={request} 
