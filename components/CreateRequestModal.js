@@ -25,6 +25,11 @@ export default function CreateRequestForm({
 		e.preventDefault()
 		let status, message
 		try{
+			if(Object.values(request).some(val => val.toString().length === 0)){
+				status = 'error'
+				message = 'All fields are required!'
+				throw new Error(message)
+			}
 			setIsLoading(true)
 			const reqBody = {
 				...request, value: web3.utils.toWei(request.value, 'ether')
@@ -51,7 +56,7 @@ export default function CreateRequestForm({
 				msgStatus: status
 			}))
 			setIsLoading(false)
-			handleClose()
+			if(status !== 'error') handleClose()
 		}
 	}, [handleClose, setStore, campaign.methods.createRequest, request])
 
@@ -71,7 +76,7 @@ export default function CreateRequestForm({
 			hide={handleClose}
 			modalClassName={'border bg-black/70 px-6 py-4 '}>
 			<form onSubmit={handleSubmit} className='my-6 px-7 flex flex-col gap-y-6 text-white/60'>
-				<H3 className='text-center'>Create A New Request.</H3>
+				<H3 className='text-center text-white'>Create A New Request.</H3>
 				<div role='group' className='flex flex-col gap-y-2'>
 					<label htmlFor='description'>Request Description</label>
 					<input
@@ -109,7 +114,7 @@ export default function CreateRequestForm({
 						id='recipient'
 						className='border border-current block w-full py-2 px-3'
 						aria-label='recipient'
-						placeholder='0xabcdefghi...'
+						placeholder='0x5b29094...'
 						minLength='42'
 						maxLength='42'
 						type='text' />
