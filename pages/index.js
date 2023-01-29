@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 export default function Home() {
 
+	const router = useRouter()
 
 	return (
 		<div className='text-white animate-fade-in'>
@@ -55,7 +56,7 @@ export default function Home() {
 				<TypographyBase className='text-slate-100'>Get started now!</TypographyBase>
 				<TypographyBase className='text-white/100'>
 					Create a&nbsp;&nbsp;&nbsp;
-					<PrimaryBtn onClick={() => useRouter().push('/campaigns/new')} className='text-purple-200'>new campaign</PrimaryBtn>
+					<PrimaryBtn onClick={() => router.push('/campaigns/new')} className='text-purple-200'>new campaign</PrimaryBtn>
 				</TypographyBase>
 			</section>
 		</div>
