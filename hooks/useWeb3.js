@@ -6,25 +6,35 @@ const useWeb3 = ({ runOnAccountsChange }) => {
 	const [ethereum, setEthereum] = useState(null)
 	const [primaryAccount, setPrimaryAccount] = useState('')
 	const [isLoadingWeb3, setIsLoadingWeb3] = useState(true)
+	const [isTestNet, setIsTestNet] = useState(false)
 	const web3 = useMemo(() => {
 		if(ethereum) return new Web3(ethereum)
 		else return 
 	}, [ethereum])
 
 	const init = useCallback(async () => {
-		const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-		setEthereum(window.ethereum)
-		setPrimaryAccount(accounts[0])
-		setIsLoadingWeb3(false)
-		window.ethereum.on('accountsChanged', function (accounts) {
+		if(+window.ethereum.networkVersion === 5) {
+			const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+			setEthereum(window.ethereum)
 			setPrimaryAccount(accounts[0])
-			return typeof runOnAccountsChange === 'function' && runOnAccountsChange()
-		})
+			setIsLoadingWeb3(false)
+			setIsTestNet(+window.ethereum.networkVersion === 5)
+		} else {
+			setIsLoadingWeb3(false)
+			setIsTestNet(false)
+		}
 	}, [])
 
 	useEffect(() => {
 		if(window && window.ethereum){
 			ethereum === null && init()
+			window.ethereum.on('accountsChanged', function (accounts) {
+				setPrimaryAccount(accounts[0])
+				return typeof runOnAccountsChange === 'function' && runOnAccountsChange()
+			})
+			window.ethereum.on('chainChanged', function(networkId){
+				setIsTestNet(+networkId.toLowerCase().split('x')[1] === 5)
+			})
 		}else if(!window.ethereum){
 			setIsLoadingWeb3(false)
 		}
@@ -34,7 +44,7 @@ const useWeb3 = ({ runOnAccountsChange }) => {
 		}
 	}, [ethereum, init])
 
-	return { web3, primaryAccount, isLoadingWeb3 }
+	return { web3, primaryAccount, isLoadingWeb3, isTestNet }
 }
 
 export default useWeb3

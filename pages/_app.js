@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }) {
 	const runOnAccountsChange = useCallback(async (asyncFunc) => {
 		typeof asyncFunc === 'function' && asyncFunc()
 	}, [])
-	const { web3, primaryAccount, isLoadingWeb3 } = useWeb3({ runOnAccountsChange })
+	const { web3, primaryAccount, isLoadingWeb3, isTestNet } = useWeb3({ runOnAccountsChange })
 	const { campaignFactory } = useCampaignFactory(web3)
 
 	const [store, setStore] = useState({
@@ -50,26 +50,50 @@ export default function App({ Component, pageProps }) {
 		}
 	}, [store.showMsg, store.hasFetchedCampaigns, store.primaryAccount, web3, getCampaigns])
 
-	if(isLoadingWeb3 === false && web3 === undefined){
+	if(isLoadingWeb3 === false && web3 === undefined && !isTestNet){
 		return (
 			<main className='h-screen w-screen flex flex-col justify-center items-center'>
 				<H1 className={`${dancing_script.className} text-8xl text-white capitalize`}>
 					Fundy
 				</H1>
-				<TypographyBase className='text-white'>
+				<TypographyBase className='text-white text-center max-w-[35ch]'>
 					Please install 
 					<a className='text-white inline-block px-3 underline-offset-2' href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn'>MetaMask</a> 
-					to use this app.
+					to use this app. <br/>
+					If you already have MetaMask installed, Please make sure you are on the <span className='text-blue-400'>Goerli test net</span>
 				</TypographyBase>
 			</main>
-		)	}
-
+		)	
+	}
 	if (campaignFactory === null && isLoadingWeb3) {
 		return (
 			<div className='h-screen w-screen flex flex-col justify-center items-center'>
 				<DefaultLoader>
 					<TextLoader text={'Loading Fundy...'} />
 				</DefaultLoader>
+			</div>
+		)
+	} else if(!isTestNet) {
+		return (
+			<div>
+				<Notification 
+					hide={() => setStore(prev => ({...prev, showMsg: !isTestNet}))}
+					showHideBtn={false}
+					message={'PLease select the Goerli test net to use this app.'} 
+					show={true} 
+					status={'info'} />
+				<div className='pointer-events-none select-none'>
+					<Layout title='Not On Goerli Test Net'>
+						<Component
+							web3={web3}
+							store={{...store, primaryAccount}}
+							setStore={setStore}
+							factory={campaignFactory}
+							getCampaigns={getCampaigns}
+							runOnAccountsChange={runOnAccountsChange} 
+							{...pageProps} />
+					</Layout>
+				</div>
 			</div>
 		)
 	} else {
