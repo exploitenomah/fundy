@@ -1,2 +1,2 @@
-# kickstart
+# Fundy
 learning solidity
